@@ -1,3 +1,0 @@
-C:/Users/sofia/OneDrive/Documentos/Uni/2ano-2sem/DA/Projeto2/cmake-build-debug/CMakeFiles/Projeto2.dir
-C:/Users/sofia/OneDrive/Documentos/Uni/2ano-2sem/DA/Projeto2/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/Users/sofia/OneDrive/Documentos/Uni/2ano-2sem/DA/Projeto2/cmake-build-debug/CMakeFiles/rebuild_cache.dir
