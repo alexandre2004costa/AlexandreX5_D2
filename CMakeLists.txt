@@ -5,4 +5,4 @@ set(CMAKE_CXX_STANDARD 17)
 
 add_executable(Projeto2 main.cpp
         Data.h
-        Data.cpp)
+        Data.cpp Menu.cpp DisplayMenu.cpp)

@@ -1,11 +1,15 @@
 #include <iostream>
 
 #include "Data.h"
+#include "DisplayMenu.h"
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
 
-    Graph<int> graph;
-    Data::loadConnected(&graph, "shipping.csv");
+    //Graph<int> graph;
+    //Data::loadConnected(&graph, "shipping.csv");
+
+    DisplayMenu displayMenu = DisplayMenu();
+    displayMenu.Base();
+
     return 0;
 }
