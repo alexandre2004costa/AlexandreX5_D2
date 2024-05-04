@@ -9,7 +9,7 @@
 
 class Algorithm {
 public:
-    static unsigned int Backtracking(Graph<int>& graph, vector<unsigned int>& minPath);
+    static double Backtracking(Graph<int>& graph, vector<int>& minPath);
 };
 
 
