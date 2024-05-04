@@ -1,13 +1,12 @@
-//
-// Created by Alexandre on 03/05/2024.
-//
 
 #ifndef PROJETO2_MENU_H
 #define PROJETO2_MENU_H
 
+#include "DataStructures/Graph.h"
 
 class Menu {
-
+    public:
+        static double Backtracking(Graph<int>& graph, vector<int>& minPath);
 };
 
 
