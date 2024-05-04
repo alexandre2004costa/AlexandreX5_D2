@@ -5,4 +5,6 @@ set(CMAKE_CXX_STANDARD 17)
 
 add_executable(Projeto2 main.cpp
         Data.h
-        Data.cpp)
+        Data.cpp
+        Algorithm.h
+        Algorithm.cpp)
