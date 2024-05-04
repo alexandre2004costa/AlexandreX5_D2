@@ -1,18 +1,8 @@
-#include <iostream>
 
-#include "Data.h"
-#include "Algorithm.h"
+#include "DisplayMenu.h"
 
 int main() {
-    Graph<int> graph;
-    Data::loadConnected(&graph, "tourism.csv");
-
-    vector<int> minPath;
-    std::cout << "min" << Algorithm::Backtracking(graph, minPath) << std::endl;
-
-    for (auto x: minPath)
-        std::cout << x << " ";
-    std::cout << endl;
-
+    DisplayMenu displayMenu = DisplayMenu();
+    displayMenu.OpenMenu();
     return 0;
 }

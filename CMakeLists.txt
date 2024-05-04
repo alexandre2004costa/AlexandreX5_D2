@@ -3,8 +3,5 @@ project(Projeto2)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(Projeto2 main.cpp
-        Data.h
-        Data.cpp
-        Algorithm.h
-        Algorithm.cpp)
+add_executable(Projeto2 main.cpp Data.h Data.cpp
+        Menu.h Menu.cpp DisplayMenu.h DisplayMenu.cpp)

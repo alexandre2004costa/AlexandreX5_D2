@@ -1,11 +1,5 @@
-//
-// Created by sofia on 02/05/2024.
-//
 
-#include <limits>
-#include <vector>
-#include "Algorithm.h"
-using namespace std;
+#include "Menu.h"
 
 bool existsPath(Graph<int>& graph, int infoOrig, int infoDest) {
     for (auto edge: graph.findVertex(infoOrig)->getAdj())
@@ -56,7 +50,7 @@ void backtrack(Graph<int>& graph, vector<int>& currentPath, vector<int>& bestPat
 }
 
 
-double Algorithm::Backtracking(Graph<int>& graph, vector<int>& minPath) {
+double Menu::Backtracking(Graph<int>& graph, vector<int>& minPath) {
     for (auto vertex: graph.getVertexSet()) {
         vertex->setVisited(false);
         vertex->setDist(0);
@@ -69,30 +63,3 @@ double Algorithm::Backtracking(Graph<int>& graph, vector<int>& minPath) {
     backtrack(graph, currentPath, minPath, minDistance);
     return minDistance;
 }
-
-
-/*
-bool isPathComplete(Graph<int>& graph, int infoFinalVertex) {
-    for (auto edge: graph.findVertex(infoFinalVertex)->getAdj())
-        if (edge->getDest()->getInfo() == 0)
-            return true;
-    return false;
-}
-
-
- double calculateDistance(Graph<int>& graph, const vector<int>& path) {
-    int n = path.size() - 1;
-    double distance = 0;
-    for (int i = 0; i < n; ++i) {
-        for (auto edge: graph.findVertex(path[i])->getAdj())
-            if (edge->getDest()->getInfo() == path[i+1])
-                distance += edge->getWeight();
-    }
-
-    for (auto edge: graph.findVertex(path[n])->getAdj())
-        if (edge->getDest()->getInfo() == 0)
-            distance += edge->getWeight();
-
-    return distance;
-}
-*/
