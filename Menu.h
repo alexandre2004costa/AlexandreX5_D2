@@ -7,7 +7,9 @@
 
 
 class Menu {
-
+public:
+    int heuristica(Graph<int> * g);
+    int greedyHeuristica(Graph<int> * g);
 };
 
 

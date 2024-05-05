@@ -28,6 +28,8 @@ public:
 
     T getInfo() const;
     std::vector<Edge<T> *> getAdj() const;
+    std::vector<Vertex<T> *> getConnects() const;
+    void addConnect(Vertex<T> *info);
     bool isVisited() const;
     bool isProcessing() const;
     bool isRemoved() const;
@@ -61,6 +63,7 @@ protected:
     double dist = 0;
     Edge<T> *path = nullptr;
     pair<double,int> combin;
+    std::vector<Vertex<T> *> connects;
 
     std::vector<Edge<T> *> incoming; // incoming edges
 
@@ -220,6 +223,15 @@ template <class T>
 std::vector<Edge<T>*> Vertex<T>::getAdj() const {
     return this->adj;
 }
+template <class T>
+std::vector<Vertex<T> *> Vertex<T>::getConnects() const {
+    return this->connects;
+}
+template <class T>
+void Vertex<T>::addConnect(Vertex<T> *info) {
+    this->connects.push_back(info);
+}
+
 
 template <class T>
 bool Vertex<T>::isVisited() const {
