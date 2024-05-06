@@ -22,7 +22,8 @@ void Data::loadConnected(Graph<int> *graph, string fileName) {
         if (destin == nullptr) graph->addVertex(infoDestin);
 
         double dist = stod(temp[2]);
-        graph->addBidirectionalEdge(infoOrigin, infoDestin, dist);
+      
+        graph->addEdge(infoOrigin, infoDestin, dist);
 
         temp.clear();
     }

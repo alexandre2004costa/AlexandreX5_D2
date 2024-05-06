@@ -5,8 +5,12 @@
 #include "DataStructures/Graph.h"
 
 class Menu {
-    public:
-        static double Backtracking(Graph<int>& graph, vector<int>& minPath);
+
+public:
+    int heuristica(Graph<int> * g);
+    int greedyHeuristica(Graph<int> * g);
+    static double Backtracking(Graph<int>& graph, vector<int>& minPath);
+
 };
 
 

@@ -48,6 +48,11 @@ public:
     bool removeEdge(T in);
     void removeOutgoingEdges();
 
+    //New
+    std::vector<Edge<T> *> getConnects() const;
+    void addConnect(Edge<T> *edge);
+    void cleanConnect();
+
     friend class MutablePriorityQueue<Vertex>;
 protected:
     T info;                // info node
@@ -67,6 +72,9 @@ protected:
     int queueIndex = 0; 		// required by MutablePriorityQueue and UFDS
 
     void deleteEdge(Edge<T> *edge);
+
+    //New
+    std::vector<Edge<T> *> connects;
 };
 
 /********************** Edge  ****************************/
@@ -86,6 +94,10 @@ public:
     void setSelected(bool selected);
     void setReverse(Edge<T> *reverse);
     void setFlow(double flow);
+
+    // New
+    pair<Vertex<int> *,Vertex<int> *> getPair() const;
+    Vertex<int> * getVertex(Vertex<int>* v) const;
 protected:
     Vertex<T> * dest; // destination vertex
     double weight; // edge weight, can also be used for capacity
@@ -97,7 +109,11 @@ protected:
     Vertex<T> *orig;
     Edge<T> *reverse = nullptr;
 
+
     double flow; // for flow-related problems
+
+    // New
+    pair<Vertex<int> *,Vertex<int> *> vertexs;
 };
 
 /********************** Graph  ****************************/
@@ -220,6 +236,19 @@ template <class T>
 std::vector<Edge<T>*> Vertex<T>::getAdj() const {
     return this->adj;
 }
+template <class T>
+std::vector<Edge<T> *> Vertex<T>::getConnects() const {
+    return this->connects;
+}
+template <class T>
+void Vertex<T>::addConnect(Edge<T> *edge) {
+    this->connects.push_back(edge);
+}
+template <class T>
+void Vertex<T>::cleanConnect(){
+    this->connects.clear();
+}
+
 
 template <class T>
 bool Vertex<T>::isVisited() const {
@@ -315,7 +344,9 @@ void Vertex<T>::deleteEdge(Edge<T> *edge) {
 /********************** Edge  ****************************/
 
 template <class T>
-Edge<T>::Edge(Vertex<T> *orig, Vertex<T> *dest, double w): orig(orig), dest(dest), weight(w) {}
+Edge<T>::Edge(Vertex<T> *orig, Vertex<T> *dest, double w): weight(w) {
+    vertexs = {orig, dest};
+}
 
 template <class T>
 Vertex<T> * Edge<T>::getDest() const {
@@ -346,7 +377,15 @@ template <class T>
 double Edge<T>::getFlow() const {
     return flow;
 }
-
+template <class T>
+pair<Vertex<int> *,Vertex<int> *> Edge<T>::getPair() const{
+    return vertexs;
+}
+template <class T>
+Vertex<int> * Edge<T>::getVertex(Vertex<int>* v) const{
+    if (vertexs.first == v) return vertexs.second;
+    else return vertexs.first;
+}
 template <class T>
 void Edge<T>::setSelected(bool selected) {
     this->selected = selected;
