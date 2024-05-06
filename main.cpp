@@ -7,7 +7,7 @@
 int main() {
 
     Graph<int> graph;
-    Data::loadConnected(&graph, "stadiums.csv");
+    Data::loadConnected(&graph, "edges_900.csv");
 
     /*DisplayMenu displayMenu = DisplayMenu();
     displayMenu.Base();*/

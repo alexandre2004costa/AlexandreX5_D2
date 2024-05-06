@@ -103,18 +103,8 @@ int Menu::heuristica(Graph<int> * g){
 }
 
 template <class T>
-void dfsKruskalPath(Vertex<T> *v) {
-    v->setVisited(true);
-    for (auto e : v->getAdj()) {
-        if (e->isSelected() && !e->getDest()->isVisited()) {
-            e->getDest()->setPath(e);
-            dfsKruskalPath(e->getDest());
-        }
-    }
-}
-template <class T>
 bool isCycle(Vertex<T> *s, Vertex<T> *t, int size){
-    cout << "cycle "<< s->getInfo() << ":" << t->getInfo() << endl;
+    //cout << "cycle "<< s->getInfo() << ":" << t->getInfo() << endl;
     if (s == t) return true;
     size--;
     queue<Vertex<int> *> q;
@@ -122,8 +112,9 @@ bool isCycle(Vertex<T> *s, Vertex<T> *t, int size){
     while (size > 1 && !q.empty()){
         s = q.front();
         q.pop();
-        cout << s->getInfo() << endl;
-        for (auto v : s->getConnects()){
+        //cout << s->getInfo() << endl;
+        for (Edge<T> *e : s->getConnects()){
+            auto v = e->getVertex(s);
             if (v->isVisited()) continue;
             if (v == t) return true;
             q.push(v);
@@ -137,28 +128,27 @@ bool isCycle(Vertex<T> *s, Vertex<T> *t, int size){
 int Menu::greedyHeuristica(Graph<int> * g){
     std::vector<Edge<int> *> allEdges;
     for (auto v: g->getVertexSet()) {
-        v->setIndegree(0);
+        v->cleanConnect();
         for (auto e: v->getAdj()) {
-            if (e->getOrig()->getInfo() < e->getDest()->getInfo()) {
-                allEdges.push_back(e);
-            }
+            allEdges.push_back(e);
         }
     }
     sort(allEdges.begin(), allEdges.end(), [](Edge<int> *a, Edge<int> *b) { return a->getWeight() < b->getWeight(); });
-    unsigned selectedEdges = 0;
     int totalWeight = 0;
         for (auto e : allEdges) {
+            auto v1 = e->getPair().first;
+            auto v2 = e->getPair().second;
             for (auto v: g->getVertexSet()) v->setVisited(false);
-                if (e->getOrig()->getIndegree() < 2 && e->getDest()->getIndegree() < 2 && !isCycle(e->getDest(),e->getOrig(), g->getVertexSet().size())) {
-                cout << "Connect " << e->getOrig()->getInfo() << ":" << e->getDest()->getInfo() << " , w : " << e->getWeight() << endl;
-                totalWeight += e->getWeight();
-                e->getOrig()->addConnect(e->getDest());
-                e->getDest()->addConnect(e->getOrig());
-                e->getOrig()->setIndegree(e->getOrig()->getIndegree()+1);
-                e->getDest()->setIndegree(e->getDest()->getIndegree()+1);
-                selectedEdges++;
-            }
+            if (v1->getConnects().size() >= 2 || v2->getConnects().size() >= 2) continue;
+            if (v1->getConnects().size() == 0 || v2->getConnects().size() == 0
+                || !isCycle(v2,v1, g->getVertexSet().size())) {
+                    //cout << "Connect " << e->getOrig()->getInfo() << ":" << e->getDest()->getInfo() << " , w : " << e->getWeight() << endl;
+                    totalWeight += e->getWeight();
+                    v1->addConnect(e);
+                    v2->addConnect(e);
+                }
         }
+
     return totalWeight;
 }
 
