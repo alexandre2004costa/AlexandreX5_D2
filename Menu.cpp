@@ -8,6 +8,7 @@
 #include <stack>
 #include <set>
 
+/*
 template <class T>
 void prim(Graph<int> * g) {
     if (g->getVertexSet().empty()) {
@@ -86,7 +87,7 @@ void createCycle(Graph<int> * g) {
             break;
         }
     }
-}*/
+}
 int Value(Graph<int> * g){
     int value = 0;
     auto v = g->findVertex(0);
@@ -100,7 +101,7 @@ int Value(Graph<int> * g){
 int Menu::heuristica(Graph<int> * g){
     prim<int>(g);
     cout << Value(g) ;
-}
+}*/
 
 template <class T>
 bool isCycle(Vertex<T> *s, Vertex<T> *t, int size){
