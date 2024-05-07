@@ -6,6 +6,7 @@
 #include "Data.h"
 #include "Menu.h"
 #include "DataStructures/Graph.h"
+#include <chrono>
 using namespace std;
 
 class DisplayMenu {

@@ -7,8 +7,7 @@
 class Menu {
 
 public:
-    int heuristica(Graph<int> * g);
-    int greedyHeuristica(Graph<int> * g);
+    static double greedyHeuristica(Graph<int> * g, vector<int>& minPath);
     static double Backtracking(Graph<int>& graph, vector<int>& minPath);
 
 };

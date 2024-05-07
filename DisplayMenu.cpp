@@ -76,10 +76,10 @@ void DisplayMenu::Base(){
             ShowResults(option, minDist, minPath);
             break;
         case 3:
-
             break;
         case 4:
-
+            minDist = Menu::greedyHeuristica(graph, minPath);
+            ShowResults(option, minDist, minPath);
             break;
         case 5:
 
