@@ -12,7 +12,7 @@ using namespace std;
 
 class Data {
 public:
-    static void loadConnected(Graph<int> *graph, string fileName);
+    static void loadGraph(Graph<int> *graph, string fileName, bool first_line);
 };
 
 

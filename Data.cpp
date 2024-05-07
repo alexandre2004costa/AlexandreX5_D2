@@ -2,11 +2,11 @@
 #include "Data.h"
 
 
-void Data::loadConnected(Graph<int> *graph, string fileName) {
+void Data::loadGraph(Graph<int> *graph, string fileName, bool first_line) {
     ifstream in(fileName);
     vector<string> temp;
     string line;
-    getline(in, line);  //ignorar a primeira linha
+    if (first_line) getline(in, line);  //ignorar a primeira linha
 
     while (getline(in, line)) {
         istringstream iss(line);
@@ -36,5 +36,3 @@ void Data::loadConnected(Graph<int> *graph, string fileName) {
     }
      */
 }
-
-

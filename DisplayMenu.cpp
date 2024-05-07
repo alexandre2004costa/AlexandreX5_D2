@@ -22,15 +22,15 @@ void DisplayMenu::OpenMenu(){
     graph = new Graph<int>();
     switch (option){
         case 1:
-            Data::loadConnected(graph, "shipping.csv");
+            Data::loadGraph(graph, "shipping.csv", true);
             Base();
             break;
         case 2:
-            Data::loadConnected(graph, "stadiums.csv");
+            Data::loadGraph(graph, "stadiums.csv", true);
             Base();
             break;
         case 3:
-            Data::loadConnected(graph, "tourism.csv");
+            Data::loadGraph(graph, "tourism.csv", true);
             Base();
             break;
         case 0:
