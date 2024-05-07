@@ -102,7 +102,6 @@ int Menu::heuristica(Graph<int> * g){
 
 template <class T>
 bool isCycle(Vertex<T> *s, Vertex<T> *t, int size){
-    //cout << "cycle "<< s->getInfo() << ":" << t->getInfo() << endl;
     if (s == t) return true;
     size--;
     queue<Vertex<int> *> q;
@@ -110,7 +109,6 @@ bool isCycle(Vertex<T> *s, Vertex<T> *t, int size){
     while (size > 1 && !q.empty()){
         s = q.front();
         q.pop();
-        //cout << s->getInfo() << endl;
         for (Edge<T> *e : s->getConnects()){
             auto v = e->getVertex(s);
             if (v->isVisited()) continue;
@@ -140,13 +138,14 @@ int Menu::greedyHeuristica(Graph<int> * g){
             if (v1->getConnects().size() >= 2 || v2->getConnects().size() >= 2) continue;
             if (v1->getConnects().size() == 0 || v2->getConnects().size() == 0
                 || !isCycle(v2,v1, g->getVertexSet().size())) {
-                    //cout << "Connect " << e->getOrig()->getInfo() << ":" << e->getDest()->getInfo() << " , w : " << e->getWeight() << endl;
                     totalWeight += e->getWeight();
                     v1->addConnect(e);
                     v2->addConnect(e);
                 }
         }
-
+    for (auto v: g->getVertexSet()) {
+        cout << v->getInfo() << " : "<<v->getAdj().size() << endl;
+    }
     return totalWeight;
 }
 
@@ -155,7 +154,7 @@ int Menu::greedyHeuristica(Graph<int> * g){
 
 bool existsPath(Graph<int>& graph, int infoOrig, int infoDest) {
     for (auto edge: graph.findVertex(infoOrig)->getAdj())
-        if (edge->getDest()->getInfo() == infoDest)
+        if (edge->getVertex(graph.findVertex(infoOrig))->getInfo() == infoDest)
             return true;
     return false;
 }
@@ -164,7 +163,7 @@ double calculateDistance(Graph<int>& graph, int infoLast, int infoNext) {
     double distance = graph.findVertex(infoLast)->getDist();
 
     for (auto edge: graph.findVertex(infoLast)->getAdj())
-        if (edge->getDest()->getInfo() == infoNext)
+        if (edge->getVertex(graph.findVertex(infoLast))->getInfo() == infoNext)
             return (distance + edge->getWeight());
 }
 
