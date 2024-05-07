@@ -35,6 +35,8 @@ public:
     void setProcesssing(bool processing);
     void setIndegree(unsigned int indegree);
     void addAdj(Vertex<int> * v, double w);
+    void setDist(double dist);
+    double getDist() const;
 
     //New
     std::vector<Edge<T> *> getConnects() const;
@@ -45,7 +47,7 @@ public:
 protected:
     T info;                // info node
     std::vector<Edge<T> *> adj;  // outgoing and incoming edges
-
+    double dist = 0;
     // auxiliary fields
     bool visited = false; // used by DFS, BFS, Prim ...
     bool processing = false; // used by isDAG (in addition to the visited attribute)
@@ -208,6 +210,14 @@ void Vertex<T>::addAdj(Vertex<int> * v, double w){
     auto newEdge = new Edge<T>(this, v, w);
     this->adj.push_back(newEdge);
     v->adj.push_back(newEdge);
+}
+template <class T>
+double Vertex<T>::getDist() const {
+    return this->dist;
+}
+template <class T>
+void Vertex<T>::setDist(double dist) {
+    this->dist = dist;
 }
 
 
