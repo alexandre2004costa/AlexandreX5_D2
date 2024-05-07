@@ -37,6 +37,8 @@ public:
     void addAdj(Vertex<int> * v, double w);
     void setDist(double dist);
     double getDist() const;
+    Edge<int>*  getPath();
+    void setPath(Edge<int>* p);
 
     //New
     std::vector<Edge<T> *> getConnects() const;
@@ -51,6 +53,7 @@ protected:
     // auxiliary fields
     bool visited = false; // used by DFS, BFS, Prim ...
     bool processing = false; // used by isDAG (in addition to the visited attribute)
+    Edge<int>* path = nullptr;
 
     int queueIndex = 0; 		// required by MutablePriorityQueue and UFDS
 
@@ -219,7 +222,14 @@ template <class T>
 void Vertex<T>::setDist(double dist) {
     this->dist = dist;
 }
-
+template <class T>
+Edge<int>* Vertex<T>::getPath(){
+    return this->path;
+}
+template <class T>
+void Vertex<T>::setPath(Edge<int>* p){
+    this->path = p;
+}
 
 /********************** Edge  ****************************/
 
