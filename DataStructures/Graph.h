@@ -30,23 +30,11 @@ public:
     std::vector<Edge<T> *> getAdj() const;
     bool isVisited() const;
     bool isProcessing() const;
-    bool isRemoved() const;
-    unsigned int getIndegree() const;
-    double getDist() const;
-    Edge<T> *getPath() const;
-    std::vector<Edge<T> *> getIncoming() const;
-
-    void setCombin(pair<double,int> p);
     void setInfo(T info);
     void setVisited(bool visited);
     void setProcesssing(bool processing);
-    void setRemoved(bool removed);
     void setIndegree(unsigned int indegree);
-    void setDist(double dist);
-    void setPath(Edge<T> *path);
-    Edge<T> * addEdge(Vertex<T> *dest, double w);
-    bool removeEdge(T in);
-    void removeOutgoingEdges();
+    void addAdj(Vertex<int> * v, double w);
 
     //New
     std::vector<Edge<T> *> getConnects() const;
@@ -56,22 +44,13 @@ public:
     friend class MutablePriorityQueue<Vertex>;
 protected:
     T info;                // info node
-    std::vector<Edge<T> *> adj;  // outgoing edges
+    std::vector<Edge<T> *> adj;  // outgoing and incoming edges
 
     // auxiliary fields
     bool visited = false; // used by DFS, BFS, Prim ...
     bool processing = false; // used by isDAG (in addition to the visited attribute)
-    bool removed = false;
-    unsigned int indegree; // used by topsort
-    double dist = 0;
-    Edge<T> *path = nullptr;
-    pair<double,int> combin;
-
-    std::vector<Edge<T> *> incoming; // incoming edges
 
     int queueIndex = 0; 		// required by MutablePriorityQueue and UFDS
-
-    void deleteEdge(Edge<T> *edge);
 
     //New
     std::vector<Edge<T> *> connects;
@@ -83,36 +62,12 @@ template <class T>
 class Edge {
 public:
     Edge(Vertex<T> *orig, Vertex<T> *dest, double w);
-
-    Vertex<T> * getDest() const;
     double getWeight() const;
-    bool isSelected() const;
-    Vertex<T> * getOrig() const;
-    Edge<T> *getReverse() const;
-    double getFlow() const;
-
-    void setSelected(bool selected);
-    void setReverse(Edge<T> *reverse);
-    void setFlow(double flow);
-
     // New
     pair<Vertex<int> *,Vertex<int> *> getPair() const;
     Vertex<int> * getVertex(Vertex<int>* v) const;
 protected:
-    Vertex<T> * dest; // destination vertex
     double weight; // edge weight, can also be used for capacity
-
-    // auxiliary fields
-    bool selected = false;
-
-    // used for bidirectional edges
-    Vertex<T> *orig;
-    Edge<T> *reverse = nullptr;
-
-
-    double flow; // for flow-related problems
-
-    // New
     pair<Vertex<int> *,Vertex<int> *> vertexs;
 };
 
@@ -177,50 +132,19 @@ Vertex<T>::Vertex(T in): info(in) {}
  * Auxiliary function to add an outgoing edge to a vertex (this),
  * with a given destination vertex (d) and edge weight (w).
  */
-template <class T>
-Edge<T> * Vertex<T>::addEdge(Vertex<T> *d, double w) {
-    auto newEdge = new Edge<T>(this, d, w);
-    adj.push_back(newEdge);
-    d->incoming.push_back(newEdge);
-    return newEdge;
-}
+
 
 /*
  * Auxiliary function to remove an outgoing edge (with a given destination (d))
  * from a vertex (this).
  * Returns true if successful, and false if such edge does not exist.
  */
-template <class T>
-bool Vertex<T>::removeEdge(T in) {
-    bool removedEdge = false;
-    auto it = adj.begin();
-    while (it != adj.end()) {
-        Edge<T> *edge = *it;
-        Vertex<T> *dest = edge->getDest();
-        if (dest->getInfo() == in) {
-            it = adj.erase(it);
-            deleteEdge(edge);
-            removedEdge = true; // allows for multiple edges to connect the same pair of vertices (multigraph)
-        }
-        else {
-            it++;
-        }
-    }
-    return removedEdge;
-}
+
 
 /*
  * Auxiliary function to remove an outgoing edge of a vertex.
  */
-template <class T>
-void Vertex<T>::removeOutgoingEdges() {
-    auto it = adj.begin();
-    while (it != adj.end()) {
-        Edge<T> *edge = *it;
-        it = adj.erase(it);
-        deleteEdge(edge);
-    }
-}
+
 
 template <class T>
 bool Vertex<T>::operator<(Vertex<T> & vertex) const {
@@ -261,36 +185,6 @@ bool Vertex<T>::isProcessing() const {
 }
 
 template <class T>
-bool Vertex<T>::isRemoved() const {
-    return this->removed;
-}
-
-template <class T>
-unsigned int Vertex<T>::getIndegree() const {
-    return this->indegree;
-}
-
-template <class T>
-double Vertex<T>::getDist() const {
-    return this->dist;
-}
-
-template <class T>
-Edge<T> *Vertex<T>::getPath() const {
-    return this->path;
-}
-
-template <class T>
-std::vector<Edge<T> *> Vertex<T>::getIncoming() const {
-    return this->incoming;
-}
-template <class T>
-void Vertex<T>::setCombin(pair<double,int> p) {
-    combin = p;
-}
-
-
-template <class T>
 void Vertex<T>::setInfo(T in) {
     this->info = in;
 }
@@ -306,40 +200,16 @@ void Vertex<T>::setProcesssing(bool processing) {
 }
 
 template <class T>
-void Vertex<T>::setRemoved(bool removed) {
-    this->removed = removed;
-}
-
-template <class T>
 void Vertex<T>::setIndegree(unsigned int indegree) {
     this->indegree = indegree;
 }
-
 template <class T>
-void Vertex<T>::setDist(double dist) {
-    this->dist = dist;
+void Vertex<T>::addAdj(Vertex<int> * v, double w){
+    auto newEdge = new Edge<T>(this, v, w);
+    this->adj.push_back(newEdge);
+    v->adj.push_back(newEdge);
 }
 
-template <class T>
-void Vertex<T>::setPath(Edge<T> *path) {
-    this->path = path;
-}
-
-template <class T>
-void Vertex<T>::deleteEdge(Edge<T> *edge) {
-    Vertex<T> *dest = edge->getDest();
-    // Remove the corresponding edge from the incoming list
-    auto it = dest->incoming.begin();
-    while (it != dest->incoming.end()) {
-        if ((*it)->getOrig()->getInfo() == info) {
-            it = dest->incoming.erase(it);
-        }
-        else {
-            it++;
-        }
-    }
-    delete edge;
-}
 
 /********************** Edge  ****************************/
 
@@ -349,34 +219,10 @@ Edge<T>::Edge(Vertex<T> *orig, Vertex<T> *dest, double w): weight(w) {
 }
 
 template <class T>
-Vertex<T> * Edge<T>::getDest() const {
-    return this->dest;
-}
-
-template <class T>
 double Edge<T>::getWeight() const {
     return this->weight;
 }
 
-template <class T>
-Vertex<T> * Edge<T>::getOrig() const {
-    return this->orig;
-}
-
-template <class T>
-Edge<T> *Edge<T>::getReverse() const {
-    return this->reverse;
-}
-
-template <class T>
-bool Edge<T>::isSelected() const {
-    return this->selected;
-}
-
-template <class T>
-double Edge<T>::getFlow() const {
-    return flow;
-}
 template <class T>
 pair<Vertex<int> *,Vertex<int> *> Edge<T>::getPair() const{
     return vertexs;
@@ -385,20 +231,6 @@ template <class T>
 Vertex<int> * Edge<T>::getVertex(Vertex<int>* v) const{
     if (vertexs.first == v) return vertexs.second;
     else return vertexs.first;
-}
-template <class T>
-void Edge<T>::setSelected(bool selected) {
-    this->selected = selected;
-}
-
-template <class T>
-void Edge<T>::setReverse(Edge<T> *reverse) {
-    this->reverse = reverse;
-}
-
-template <class T>
-void Edge<T>::setFlow(double flow) {
-    this->flow = flow;
 }
 
 /********************** Graph  ****************************/
@@ -479,7 +311,7 @@ bool Graph<T>::addEdge(const T &sourc, const T &dest, double w) {
     auto v2 = findVertex(dest);
     if (v1 == nullptr || v2 == nullptr)
         return false;
-    v1->addEdge(v2, w);
+    v1->addAdj(v2, w);
     return true;
 }
 
@@ -491,10 +323,38 @@ bool Graph<T>::addEdge(const T &sourc, const T &dest, double w) {
 template <class T>
 bool Graph<T>::removeEdge(const T &sourc, const T &dest) {
     Vertex<T> * srcVertex = findVertex(sourc);
-    if (srcVertex == nullptr) {
+    Vertex<T> * endVertex = findVertex(dest);
+    if (srcVertex == nullptr || dest == nullptr) {
         return false;
     }
-    return srcVertex->removeEdge(dest);
+    bool removedEdge = false;
+    auto it = srcVertex->adj.begin();
+    while (it != srcVertex->adj.end()) {
+        Edge<T> *edge = *it;
+        Vertex<T> *d = edge->getVertex(srcVertex);
+        if (d->getInfo() == dest) {
+            it = srcVertex->adj.erase(it);
+            removedEdge = true; // allows for multiple edges to connect the same pair of vertices (multigraph)
+        }
+        else {
+            it++;
+        }
+    }
+    if (!removedEdge) return false;
+    removedEdge = false;
+    it = endVertex->adj.begin();
+    while (it != endVertex->adj.end()) {
+        Edge<T> *edge = *it;
+        Vertex<T> *d = edge->getVertex(endVertex);
+        if (d->getInfo() == sourc) {
+            it = endVertex->adj.erase(it);
+            removedEdge = true; // allows for multiple edges to connect the same pair of vertices (multigraph)
+        }
+        else {
+            it++;
+        }
+    }
+    return removedEdge;
 }
 
 template <class T>
