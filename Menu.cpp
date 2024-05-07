@@ -4,6 +4,7 @@
 #include "Menu.h"
 #include <stack>
 #include <set>
+#include <cmath>
 
 
 template <class T>
@@ -130,3 +131,24 @@ double Menu::Backtracking(Graph<int>& graph, vector<int>& minPath) {
     return minDistance;
 }
 
+double pi=3.14159265358979323846;
+double earthradius=6371000; //meters
+
+double Menu::toRadians(double coord){
+    return coord*pi/180.0;
+}
+
+double Menu::haversineDistance(double lat1, double lon1, double lat2, double lon2){
+    double radLat1=toRadians(lat1);
+    double radLon1=toRadians(lon1);
+    double radLat2=toRadians(lat2);
+    double radLon2=toRadians(lon2);
+
+    double deltaLat=radLat2-radLat1;
+    double deltaLon=radLon2-radLon1;
+
+    double a=sin(deltaLat/2)*sin(deltaLat/2)+cos(radLat1)*cos(radLat2)*sin(deltaLon/2)*sin(deltaLon/2);
+    double c=2.0*atan2(sqrt(a), sqrt(1.0-a));
+
+    return earthradius*c;
+}
