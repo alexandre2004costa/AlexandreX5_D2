@@ -8,6 +8,5 @@ int main() {
     DisplayMenu displayMenu = DisplayMenu();
     displayMenu.OpenMenu();
 
-
     return 0;
 }
