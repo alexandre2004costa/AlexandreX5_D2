@@ -209,7 +209,8 @@ template <class T>
 void Vertex<T>::addAdj(Vertex<int> * v, double w){
     auto newEdge = new Edge<T>(this, v, w);
     this->adj.push_back(newEdge);
-    v->adj.push_back(newEdge);
+    auto newEdge2 = new Edge<T>(v, this, w);
+    v->adj.push_back(newEdge2);
 }
 template <class T>
 double Vertex<T>::getDist() const {

@@ -2,6 +2,7 @@
 #include <vector>
 #include "DataStructures/Graph.h"
 #include "Menu.h"
+#include <random>
 #include <stack>
 #include <set>
 
@@ -62,6 +63,52 @@ double Menu::greedyHeuristica(Graph<int> * g, vector<int>& minPath){
         }
     } while (v->getInfo() != 0);
     return totalWeight;
+}
+
+
+double Menu::randomSwap(Graph<int> * g, vector<int>& minPath, double minDist) {
+    double minDistS = minDist;
+    int size = g->getNumVertex()-1;
+
+    random_device rd; mt19937 gen(rd());
+    uniform_int_distribution<int> dist(0, size);
+    int pos1 = dist(gen), pos2 = dist(gen);
+    while (pos1 == pos2) pos2 = dist(gen);
+
+    int n1 = minPath[pos1], n2 = minPath[pos2];
+    int bef1, aft1, bef2, aft2;
+
+    if (pos1 == 0) bef1 = minPath[size - 1];
+    else bef1 = minPath[pos1 - 1];
+    if (pos2 == 0) bef2 = minPath[size - 1];
+    else bef2 = minPath[pos2 - 1];
+    if (pos1 == size) aft1 = minPath[1];
+    else aft1 = minPath[pos1 + 1];
+    if (pos2 == size) aft2 = minPath[1];
+    else aft2 = minPath[pos2 + 1];
+
+    for (auto e: g->findVertex(n1)->getAdj()) {
+        auto v = e->getPair().second;
+        double w = e->getWeight();
+
+        if (v->getInfo() == bef1 || v->getInfo() == aft1)  minDistS -= w;
+        else if (v->getInfo() == bef2 || v->getInfo() == aft2)  minDistS += w;
+    }
+
+    for (auto e: g->findVertex(n2)->getAdj()) {
+        auto v = e->getPair().second;
+        double w = e->getWeight();
+
+        if (v->getInfo() == bef2 || v->getInfo() == aft2)  minDistS -= w;
+        else if (v->getInfo() == bef1 || v->getInfo() == aft1)  minDistS += w;
+    }
+
+
+    if (minDistS < minDist) {
+        minPath[pos1] = n2; minPath[pos2] = n1;
+        return minDistS;
+    }
+    return minDist;
 }
 
 

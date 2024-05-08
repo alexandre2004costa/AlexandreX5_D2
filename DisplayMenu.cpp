@@ -79,6 +79,9 @@ void DisplayMenu::Base(){
             break;
         case 4:
             minDist = Menu::greedyHeuristica(graph, minPath);
+            for (int i = 0; i < 15; i++) {
+                minDist = Menu::randomSwap(graph, minPath, minDist);
+            }
             ShowResults(option, minDist, minPath);
             break;
         case 5:

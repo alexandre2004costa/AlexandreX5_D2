@@ -9,6 +9,7 @@ class Menu {
 public:
     static double greedyHeuristica(Graph<int> * g, vector<int>& minPath);
     static double Backtracking(Graph<int>& graph, vector<int>& minPath);
+    static double randomSwap(Graph<int> * g, vector<int>& minPath, double minDistance);
 
 };
 
