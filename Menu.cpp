@@ -89,16 +89,16 @@ double Menu::randomSwap(Graph<int> * g, vector<int>& minPath, double minDist) {
                 auto v = e->getPair().second;
                 double w = e->getWeight();
 
-                if (v->getInfo() == bef1)  {minDistS -= w; cout << "A";}
-                if (v->getInfo() == aft2)  {minDistS += w; cout << "B";}
+                if (v->getInfo() == bef1)  {minDistS -= w;}
+                if (v->getInfo() == aft2)  {minDistS += w;}
             }
 
             for (auto e: g->findVertex(n2)->getAdj()) {
                 auto v = e->getPair().second;
                 double w = e->getWeight();
 
-                if (v->getInfo() == aft2)  {minDistS -= w; cout << "C";}
-                if (v->getInfo() == bef1)  {minDistS += w; cout << "D";}
+                if (v->getInfo() == aft2)  {minDistS -= w;}
+                if (v->getInfo() == bef1)  {minDistS += w;}
             }
         }
 
@@ -112,16 +112,16 @@ double Menu::randomSwap(Graph<int> * g, vector<int>& minPath, double minDist) {
             auto v = e->getPair().second;
             double w = e->getWeight();
 
-            if (v->getInfo() == bef1 || v->getInfo() == aft1)  {minDistS -= w; cout << "A";}
-            if (v->getInfo() == bef2 || v->getInfo() == aft2)  {minDistS += w; cout << "B";}
+            if (v->getInfo() == bef1 || v->getInfo() == aft1)  {minDistS -= w;}
+            if (v->getInfo() == bef2 || v->getInfo() == aft2)  {minDistS += w;}
         }
 
         for (auto e: g->findVertex(n2)->getAdj()) {
             auto v = e->getPair().second;
             double w = e->getWeight();
 
-            if (v->getInfo() == bef2 || v->getInfo() == aft2)  {minDistS -= w; cout << "C";}
-            if (v->getInfo() == bef1 || v->getInfo() == aft1)  {minDistS += w; cout << "D";}
+            if (v->getInfo() == bef2 || v->getInfo() == aft2)  {minDistS -= w;}
+            if (v->getInfo() == bef1 || v->getInfo() == aft1)  {minDistS += w;}
         }
     }
 
