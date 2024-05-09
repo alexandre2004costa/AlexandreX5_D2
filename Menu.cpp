@@ -362,10 +362,23 @@ double Menu::Cristofides(Graph<int> * g, vector<int>& minPath){
 double pi=3.14159265358979323846;
 double earthradius=6371000; //meters
 
+/**
+ * @brief Converts degrees to radians.
+ * @param coord Value of the coordinate in degrees.
+ * @return Value of the coordinate in radians.
+ */
 double Menu::toRadians(double coord){
     return coord*pi/180.0;
 }
 
+/**
+ * @brief Gives the Haversine distance between two coordinates.
+ * @param lat1 Latitude of the first point in degrees.
+ * @param lon1 Longitude of the first point in degrees.
+ * @param lat2 Latitude of the second point in degrees.
+ * @param lon2 Longitude of the second point in degrees.
+ * @return The Haversine distance between the two points in meters.
+ */
 double Menu::haversineDistance(double lat1, double lon1, double lat2, double lon2){
     double radLat1=toRadians(lat1);
     double radLon1=toRadians(lon1);
