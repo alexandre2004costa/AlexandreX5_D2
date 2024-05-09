@@ -435,20 +435,14 @@ double Menu::triangularApproximation(Graph<int>* g, vector<int>& minPath){
     vector p=prim(g);
     for(auto i=0; i<p.size(); i++){
         r+=p[i]->getDist();
-        cout<<p[i]->getDist()<<endl;
+        //cout<<p[i]->getDist()<<endl;
         minPath.push_back(p[i]->getInfo());
     }
 
     Vertex<int> * ultimo=p[p.size()-1];
-  /*  vector<Edge<int> *> connect=p[p.size()-2]->getConnects();
-    for(int i=0; i<connect.size(); i++){
-        if(connect[i]->getVertex(ultimo)->getInfo()==ultimo->getInfo()){
-            r+=ultimo.
-                    cout<<end;
-        }
-    }*/
+
     r+=ultimo->getWeightTo(p[p.size()-2]->getInfo());
-    cout<<ultimo->getWeightTo(p[p.size()-2]->getInfo())<<endl;
+    //cout<<ultimo->getWeightTo(p[p.size()-2]->getInfo())<<endl;
 
     return r;
 }

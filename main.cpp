@@ -9,11 +9,7 @@ int main() {
    // cout<<distance<<endl;
     DisplayMenu displayMenu = DisplayMenu();
     displayMenu.OpenMenu();
-  /*  Graph<int> *graph = new Graph<int>();
-    vector<int> minPath;
-    Data::loadGraph(graph, "shipping.csv", true);
-    cout<<menu.Backtracking(*graph, minPath)<<endl;*/
-   // cout<<menu.triangularApproximation(graph)<<endl;
+  
 
     /*
     Graph<int>* graph = new Graph<int>();
