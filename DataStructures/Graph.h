@@ -36,6 +36,7 @@ public:
     void setIndegree(unsigned int indegree);
     void addAdj(Vertex<int> * v, double w);
     void setDist(double dist);
+    void setPath(Edge<T> *path);
     double getDist() const;
 
     //New
@@ -51,7 +52,7 @@ protected:
     // auxiliary fields
     bool visited = false; // used by DFS, BFS, Prim ...
     bool processing = false; // used by isDAG (in addition to the visited attribute)
-
+    Edge<T> *path = nullptr;
     int queueIndex = 0; 		// required by MutablePriorityQueue and UFDS
 
     //New
@@ -286,6 +287,11 @@ bool Graph<T>::addVertex(const T &in) {
         return false;
     vertexSet.push_back(new Vertex<T>(in));
     return true;
+}
+
+template <class T>
+void Vertex<T>::setPath(Edge<T> *path) {
+    this->path = path;
 }
 
 /*

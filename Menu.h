@@ -11,6 +11,8 @@ public:
     static double Backtracking(Graph<int>& graph, vector<int>& minPath);
     double haversineDistance(double lat1, double lon1, double lat2, double lon2);
     double toRadians(double coord);
+    static vector<Vertex<int>*> prim(Graph<int> * g);
+    static double triangularApproximationHeuristic(Graph<int>* graph);
 
 };
 

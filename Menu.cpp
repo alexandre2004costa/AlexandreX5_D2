@@ -5,6 +5,7 @@
 #include <stack>
 #include <set>
 #include <cmath>
+#include <unordered_map>
 
 
 template <class T>
@@ -152,3 +153,58 @@ double Menu::haversineDistance(double lat1, double lon1, double lat2, double lon
 
     return earthradius*c;
 }
+
+
+//PRIMMMMMMMMMMMMMMMMMMM
+
+vector<Vertex<int>*> Menu::prim(Graph<int> * g){
+    if (g->getVertexSet().empty()) {
+        return g->getVertexSet();
+    }
+
+    for(auto v : g->getVertexSet()) {
+        v->setDist(INF);
+        v->setPath(nullptr);
+        v->setVisited(false);
+    }
+
+    Vertex<int>* s = g->getVertexSet().front();
+    s->setDist(0);
+
+    MutablePriorityQueue<Vertex<int>> q;
+    q.insert(s);
+
+    while(!q.empty()) {
+
+        auto v = q.extractMin();
+        v->setVisited(true);
+
+        for(auto &e : v->getAdj()) {
+            Vertex<int>* w = e->getVertex(v);
+
+            if (!w->isVisited()) {
+                auto oldDist = w->getDist();
+
+                if(e->getWeight() < oldDist) {
+                    w->setDist(e->getWeight());
+                    w->setPath(e);
+
+                    if (oldDist == INF) {
+                        q.insert(w);
+                    }
+
+                    else {
+                        q.decreaseKey(w);
+                    }
+                }
+            }
+        }
+    }
+    return g->getVertexSet();
+}
+
+double Menu::triangularApproximationHeuristic(Graph<int>* g){
+    return 0;
+}
+
+
