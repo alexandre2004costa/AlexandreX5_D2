@@ -76,6 +76,8 @@ void DisplayMenu::Base(){
             ShowResults(option, minDist, minPath);
             break;
         case 3:
+            minDist = Menu::triangularApproximation(graph, minPath);
+            ShowResults(option, minDist, minPath);
             break;
         case 4:
             minDist = Menu::greedyHeuristica(graph, minPath);

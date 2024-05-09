@@ -345,6 +345,7 @@ bool Graph<T>::addVertex(const T &in) {
     return true;
 }
 
+
 /*
  *  Removes a vertex with a given content (in) from a graph (this), and
  *  all outgoing and incoming edges.
