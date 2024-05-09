@@ -150,6 +150,7 @@ double calculateDistance(Graph<int>& graph, int infoLast, int infoNext) {
     for (auto edge: graph.findVertex(infoLast)->getAdj())
         if (edge->getVertex(graph.findVertex(infoLast))->getInfo() == infoNext)
             return (distance + edge->getWeight());
+    return 0;
 }
 
 
@@ -429,8 +430,27 @@ vector<Vertex<int>*> Menu::prim(Graph<int> * g){
     return g->getVertexSet();
 }
 
-double Menu::triangularApproximationHeuristic(Graph<int>* g){
-    return 0;
+double Menu::triangularApproximation(Graph<int>* g, vector<int>& minPath){
+    double r=0;
+    vector p=prim(g);
+    for(auto i=0; i<p.size(); i++){
+        r+=p[i]->getDist();
+        cout<<p[i]->getDist()<<endl;
+        minPath.push_back(p[i]->getInfo());
+    }
+
+    Vertex<int> * ultimo=p[p.size()-1];
+  /*  vector<Edge<int> *> connect=p[p.size()-2]->getConnects();
+    for(int i=0; i<connect.size(); i++){
+        if(connect[i]->getVertex(ultimo)->getInfo()==ultimo->getInfo()){
+            r+=ultimo.
+                    cout<<end;
+        }
+    }*/
+    r+=ultimo->getWeightTo(p[p.size()-2]->getInfo());
+    cout<<ultimo->getWeightTo(p[p.size()-2]->getInfo())<<endl;
+
+    return r;
 }
 
 
