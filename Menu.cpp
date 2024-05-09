@@ -40,12 +40,10 @@ double Menu::greedyHeuristica(Graph<int> * g, vector<int>& minPath){
         for (auto e : allEdges) {
             auto v1 = e->getPair().first;
             auto v2 = e->getPair().second;
-            cout << v1->getInfo() << " : " << v2->getInfo() << endl;
             if (v1->getConnects().size() >= 2 || v2->getConnects().size() >= 2) continue;
             for (auto v: g->getVertexSet()) v->setVisited(false);
             if (v1->getConnects().size() == 0 || v2->getConnects().size() == 0
                 || !isCycle(v2,v1, g->getVertexSet().size())) {
-                    cout << "entrou" << endl;
                     totalWeight += e->getWeight();
                     v1->addConnect(e);
                     v2->addConnect(e);
@@ -178,19 +176,16 @@ void BestMatch(Graph<T> *g) {
     }
     for (auto v : g->getVertexSet()){
         if (static_cast<int>(v->getDist()) % 2 != 0) oddVertex.push_back(v);
-        else{
-            if (v->getPath() == nullptr) continue;
-            for (auto e : v->getAdj()){
-                if (e == v->getPath()){
-                    v->addConnect(e);
-                    e->getVertex(v)->addConnect(e);
-                }
+        if (v->getPath() == nullptr ) continue;
+        for (auto e : v->getAdj()){
+            if (e == v->getPath()){
+                v->addConnect(e);
+                e->getVertex(v)->addConnect(e);
             }
         }
         v->setDist(0);
     }
-
-    /*while (!oddVertex.empty()) {
+    while (!oddVertex.empty()) {
         first = oddVertex.begin();
         vector<Vertex<int> *>::iterator it = oddVertex.begin() + 1;
         vector<Vertex<int> *>::iterator end = oddVertex.end();
@@ -210,52 +205,86 @@ void BestMatch(Graph<T> *g) {
         closest->addConnect(e);
         oddVertex.erase(tmp);
         oddVertex.erase(first);
-    }*/
-
-    double p = 0;
+    }
     for (auto v : g->getVertexSet()){
-        cout << v->getInfo() << endl;
+        //cout <<" !! "<<v->getInfo() << endl;
         for (auto e : v->getConnects()){
-            if (e->getVertex(v)->getInfo() < v->getInfo()) {
-                cout <<" ! "<< e->getVertex(v)->getInfo() << endl;
-                p += e->getWeight();
-            }
+            //cout << e->getVertex(v)->getInfo() << endl;
         }
     }
-    cout << p;
 }
 
 template <class T>
-void findEulerianCircuit(Vertex<T>* start, vector<Edge<T>*>& circuit) {
-    stack<Vertex<T>*> stack;
-    stack.push(start);
-
-    while (!stack.empty()) {
-        Vertex<T>* currentVertex = stack.top();
-        bool found = false;
-
-        for (auto& edge : currentVertex->getConnects()) {
-            Vertex<T>* nextVertex = edge->getVertex(currentVertex);
-
-            if (!nextVertex->isVisited()) {
-                nextVertex->setVisited(true);
-                stack.push(nextVertex);
-                found = true;
-                break;
-            }
-        }
-
-        if (!found) {
-            stack.pop();
-            circuit.push_back(currentVertex->getPath());
-        }
+void dfs(Vertex<T>* v, vector<Edge<T>*>& eulerianCircuit) {
+    while (!v->getConnects().empty()) {
+        Edge<T>* e = v->getConnects().front();
+        Vertex<T>* u = e->getVertex(v);
+        v->removeEdgeFromConnect(u->getInfo());
+        u->removeEdgeFromConnect(v->getInfo());
+        eulerianCircuit.push_back(e);
+        dfs(u, eulerianCircuit);
     }
 }
 
+template <class T>
+void findEulerianCircuit(Vertex<T> *v, vector<Edge<T>*>& eulerianCircuit) {
+    dfs(v, eulerianCircuit);
+}
+template <class T>
+void Tsp(vector<Edge<int>*> &path, double &cost, Graph<T> *g){
+    cost = 0;
+
+    vector<Edge<int>*>::iterator it = path.begin();
+
+    int actualV = 0;
+    int lastV = 0;
+    int carryV = 0;
+
+    while(it != path.end()){
+        Vertex<int> * v1 = (*it)->getPair().first;
+        Vertex<int> * v2 = (*it)->getPair().second;
+        if (v1->getInfo() == actualV || v1->getInfo() == carryV){
+            if (v2->isVisited()){
+                carryV = v2->getInfo();
+            }else actualV = v2->getInfo();
+        }else if (v2->getInfo() == actualV || v2->getInfo() == carryV){
+            if (v1->isVisited()){
+                carryV = v2->getInfo();
+            }else actualV = v1->getInfo();
+        }else{ // Back edge
+            if (v1->isVisited()){
+                actualV = v2->getInfo();
+            }else{
+                actualV = v1->getInfo();
+            }
+        }
+        if (actualV != lastV){
+            //cout << "de " << lastV << " para " << actualV << endl;
+            double v = g->findVertex(actualV)->getWeightTo(lastV);
+            if (v == -1) cout << "Error here";
+            else cost += v;
+            lastV = actualV;
+        }
+        v1->setVisited(true);
+        v2->setVisited(true);
+        it++;
+    }
+    //cout << "de " << actualV << " para " << 0 << endl;
+    double v = g->findVertex(0)->getWeightTo(actualV);
+    if (v == -1) cout << "Error here";
+    else cost += v;
+
+}
 
 double Menu::Cristofides(Graph<int> * g, vector<int>& minPath){
     prim(g);
     BestMatch(g);
-
+    vector<Edge<int>*> eulerian;
+    findEulerianCircuit(g->findVertex(0), eulerian);
+    //for (auto e : eulerian)  cout << e->getPair().first->getInfo() << " : " << e->getPair().second->getInfo() << endl;
+    for (auto v : g->getVertexSet()) v->setVisited(false);
+    double cost;
+    Tsp(eulerian, cost, g);
+    return cost;
 }
 

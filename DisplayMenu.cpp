@@ -82,7 +82,8 @@ void DisplayMenu::Base(){
             ShowResults(option, minDist, minPath);
             break;
         case 5:
-
+            cout << Menu::Cristofides(graph, minPath) << endl;
+            askContinue();
             break;
         case 0:
             CloseMenu();
