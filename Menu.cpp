@@ -8,7 +8,16 @@
 #include <cmath>
 #include <unordered_map>
 
-
+/**
+ * @brief Shows if exists a cycle between two vertices in the graph.
+ * This function does a breadth-first search (BFS) starting in vertex s to see if exists a
+ * path from vertex s to t. If that path exists there is a cycle between vertices s and t.
+ * @tparam T The type of the vertices.
+ * @param s Pointer to the source vertex.
+ * @param t Pointer to the target vertex.
+ * @param size Number of vertices in the graph.
+ * @return It returns true if exists a cycle between vertices s and t. False if it doesn't exist.
+ */
 template <class T>
 bool isCycle(Vertex<T> *s, Vertex<T> *t, int size){
     if (s == t) return true;
