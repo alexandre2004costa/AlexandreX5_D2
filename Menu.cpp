@@ -2,6 +2,7 @@
 #include <vector>
 #include "DataStructures/Graph.h"
 #include "Menu.h"
+#include <random>
 #include <stack>
 #include <set>
 
@@ -62,6 +63,73 @@ double Menu::greedyHeuristica(Graph<int> * g, vector<int>& minPath){
         }
     } while (v->getInfo() != 0);
     return totalWeight;
+}
+
+
+double Menu::randomSwap(Graph<int> * g, vector<int>& minPath, double minDist) {
+    double minDistS = minDist;
+    int size = g->getNumVertex()-1;
+
+    random_device rd; mt19937 gen(rd());
+    uniform_int_distribution<int> dist(1, size-1);
+    int pos1 = dist(gen), pos2 = dist(gen);
+    while (pos1 == pos2) pos2 = dist(gen);
+
+    int n1 = minPath[pos1], n2 = minPath[pos2];
+    if (abs(pos1-pos2) == 1) {
+        if (pos2 < pos1) {
+            //Trocar a ordem para crescente
+            int temp = pos1; pos1 = pos2; pos2 = temp;
+            temp = n1; n1 = n2; n2 = temp;
+
+            int bef1 = minPath[pos1 - 1];
+            int aft2 = minPath[pos2 + 1];
+
+            for (auto e: g->findVertex(n1)->getAdj()) {
+                auto v = e->getPair().second;
+                double w = e->getWeight();
+
+                if (v->getInfo() == bef1)  {minDistS -= w;}
+                if (v->getInfo() == aft2)  {minDistS += w;}
+            }
+
+            for (auto e: g->findVertex(n2)->getAdj()) {
+                auto v = e->getPair().second;
+                double w = e->getWeight();
+
+                if (v->getInfo() == aft2)  {minDistS -= w;}
+                if (v->getInfo() == bef1)  {minDistS += w;}
+            }
+        }
+
+    } else {
+        int bef1 = minPath[pos1 - 1];
+        int bef2 = minPath[pos2 - 1];
+        int aft1 = minPath[pos1 + 1];
+        int aft2 = minPath[pos2 + 1];
+
+        for (auto e: g->findVertex(n1)->getAdj()) {
+            auto v = e->getPair().second;
+            double w = e->getWeight();
+
+            if (v->getInfo() == bef1 || v->getInfo() == aft1)  {minDistS -= w;}
+            if (v->getInfo() == bef2 || v->getInfo() == aft2)  {minDistS += w;}
+        }
+
+        for (auto e: g->findVertex(n2)->getAdj()) {
+            auto v = e->getPair().second;
+            double w = e->getWeight();
+
+            if (v->getInfo() == bef2 || v->getInfo() == aft2)  {minDistS -= w;}
+            if (v->getInfo() == bef1 || v->getInfo() == aft1)  {minDistS += w;}
+        }
+    }
+
+    if (minDistS < minDist) {
+        minPath[pos1] = n2; minPath[pos2] = n1;
+        return minDistS;
+    }
+    return minDist;
 }
 
 
