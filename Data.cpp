@@ -42,3 +42,27 @@ void Data::loadGraph(Graph<int> *graph, string fileName, bool first_line) {
     }
      */
 }
+void  Data::loadNodesInfo(Graph<int> *graph, string fileName){
+    ifstream in(fileName);
+    vector<string> temp;
+    string line;
+    getline(in, line);  //ignorar a primeira linha
+
+    while (getline(in, line)) {
+        istringstream iss(line);
+        string eachWord;
+        while (getline(iss, eachWord, ',')) temp.push_back(eachWord);
+
+        int infoOrigin = stoi(temp[0]);
+        Vertex<int>* origin = graph->findVertex(infoOrigin);
+        if (origin == nullptr) return;
+
+        double longitude = stod(temp[1]);
+        double latitude = stod(temp[2]);
+
+        origin->setLatitude(latitude);
+        origin->setLongitude(longitude);
+
+        temp.clear();
+    }
+}

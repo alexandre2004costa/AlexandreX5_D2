@@ -13,6 +13,7 @@ using namespace std;
 class Data {
 public:
     static void loadGraph(Graph<int> *graph, string fileName, bool first_line);
+    static void loadNodesInfo(Graph<int> *graph, string fileName);
 };
 
 

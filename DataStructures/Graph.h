@@ -37,11 +37,19 @@ public:
     void addAdj(Vertex<int> * v, double w);
     void setDist(double dist);
     double getDist() const;
+    Edge<int>*  getPath();
+    void setPath(Edge<int>* p);
+    bool removeEdgeFromConnect(T in);
+    double getWeightTo(T info);
 
     //New
     std::vector<Edge<T> *> getConnects() const;
     void addConnect(Edge<T> *edge);
     void cleanConnect();
+    double getLongitude();
+    double getLatitude();
+    void setLatitude(double l);
+    void setLongitude(double l);
 
     friend class MutablePriorityQueue<Vertex>;
 protected:
@@ -51,7 +59,9 @@ protected:
     // auxiliary fields
     bool visited = false; // used by DFS, BFS, Prim ...
     bool processing = false; // used by isDAG (in addition to the visited attribute)
-
+    Edge<int>* path = nullptr;
+    double longitude = 0;
+    double latitude = 0;
     int queueIndex = 0; 		// required by MutablePriorityQueue and UFDS
 
     //New
@@ -174,7 +184,22 @@ template <class T>
 void Vertex<T>::cleanConnect(){
     this->connects.clear();
 }
-
+template <class T>
+double Vertex<T>::getLongitude(){
+    return this->longitude;
+}
+template <class T>
+double Vertex<T>::getLatitude(){
+    return this->latitude;
+}
+template <class T>
+void Vertex<T>::setLatitude(double l){
+    this->latitude = l;
+}
+template <class T>
+void Vertex<T>::setLongitude(double l){
+    this->longitude = l;
+}
 
 template <class T>
 bool Vertex<T>::isVisited() const {
@@ -220,7 +245,38 @@ template <class T>
 void Vertex<T>::setDist(double dist) {
     this->dist = dist;
 }
-
+template <class T>
+Edge<int>* Vertex<T>::getPath(){
+    return this->path;
+}
+template <class T>
+void Vertex<T>::setPath(Edge<int>* p){
+    this->path = p;
+}
+template <class T>
+bool Vertex<T>::removeEdgeFromConnect(T in) {
+    bool removedEdge = false;
+    auto it = connects.begin();
+    while (it != connects.end()) {
+        Edge<T> *edge = *it;
+        Vertex<T> *dest = edge->getVertex(this);
+        if (dest->getInfo() == in) {
+            it = connects.erase(it);
+            removedEdge = true; // allows for multiple edges to connect the same pair of vertices (multigraph)
+        }
+        else {
+            it++;
+        }
+    }
+    return removedEdge;
+}
+template <class T>
+double Vertex<T>::getWeightTo(T info){
+    for (auto e : this->adj){
+        if (e->getVertex(this)->getInfo() == info) return e->getWeight();
+    }
+    return -1;
+}
 
 /********************** Edge  ****************************/
 
@@ -335,17 +391,19 @@ template <class T>
 bool Graph<T>::removeEdge(const T &sourc, const T &dest) {
     Vertex<T> * srcVertex = findVertex(sourc);
     Vertex<T> * endVertex = findVertex(dest);
-    if (srcVertex == nullptr || dest == nullptr) {
+    if (srcVertex == nullptr || endVertex == nullptr) {
         return false;
     }
     bool removedEdge = false;
-    auto it = srcVertex->adj.begin();
-    while (it != srcVertex->adj.end()) {
-        Edge<T> *edge = *it;
-        Vertex<T> *d = edge->getVertex(srcVertex);
+    auto it = srcVertex->getAdj().begin();
+    cout << (*it)->getVertex(srcVertex)->getInfo() << endl;
+    while (it != srcVertex->getAdj().end()) {
+        Vertex<T> *d = (*it)->getVertex(srcVertex);
         if (d->getInfo() == dest) {
-            it = srcVertex->adj.erase(it);
+            for (auto k : srcVertex->getAdj()) cout << k->getVertex(srcVertex)->getInfo() << endl;
+            srcVertex->getAdj().erase(it);
             removedEdge = true; // allows for multiple edges to connect the same pair of vertices (multigraph)
+            break;
         }
         else {
             it++;
@@ -353,12 +411,13 @@ bool Graph<T>::removeEdge(const T &sourc, const T &dest) {
     }
     if (!removedEdge) return false;
     removedEdge = false;
-    it = endVertex->adj.begin();
-    while (it != endVertex->adj.end()) {
+    it = endVertex->getAdj().begin();
+    while (it != endVertex->getAdj().end()) {
         Edge<T> *edge = *it;
+
         Vertex<T> *d = edge->getVertex(endVertex);
         if (d->getInfo() == sourc) {
-            it = endVertex->adj.erase(it);
+            it = endVertex->getAdj().erase(it);
             removedEdge = true; // allows for multiple edges to connect the same pair of vertices (multigraph)
         }
         else {
