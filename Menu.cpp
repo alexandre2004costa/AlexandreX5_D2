@@ -181,15 +181,17 @@ void backtrack(Graph<int>& graph, vector<int>& currentPath, vector<int>& bestPat
             Vertex<int>* nextVert = graph.findVertex(i);
 
             if (existsPath(graph, currentPath[pathSize - 1], i) && !nextVert->isVisited()) {
-                nextVert->setVisited(true);
                 double dist = calculateDistance(graph, currentPath[pathSize - 1], i);
-                nextVert->setDist(dist);
-                currentPath.push_back(i);
+                if (dist < minDistance) {
+                    nextVert->setVisited(true);
+                    nextVert->setDist(dist);
+                    currentPath.push_back(i);
 
-                backtrack(graph, currentPath, bestPath, minDistance);
+                    backtrack(graph, currentPath, bestPath, minDistance);
 
-                nextVert->setVisited(false);
-                currentPath.pop_back();
+                    nextVert->setVisited(false);
+                    currentPath.pop_back();
+                }
             }
         }
     }
