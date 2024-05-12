@@ -77,7 +77,7 @@ double Menu::greedyHeuristica(Graph<int> * g, vector<int>& minPath){
 }
 
 
-double Menu::randomSwap(Graph<int> * g, vector<int>& minPath, double minDist) {
+double Menu::randomSwap(Graph<int>* g, vector<int>& minPath, double minDist) {
     double minDistS = minDist;
     int size = g->getNumVertex()-1;
 
@@ -144,6 +144,47 @@ double Menu::randomSwap(Graph<int> * g, vector<int>& minPath, double minDist) {
 }
 
 
+double distancePath(Graph<int>* g, vector<int>& path) {
+    double distance = 0;
+    int n = path.size();
+    for (int i = 0; i < n - 1; i++) {
+        for (auto edge: g->findVertex(path[i])->getAdj()) {
+            if (edge->getPair().second->getInfo() == path[i+1])
+                distance += edge->getWeight();
+        }
+    }
+
+    for (auto edge: g->findVertex(path[n - 1])->getAdj()) {
+        if (edge->getPair().second->getInfo() == path[0])
+            distance += edge->getWeight();
+    }
+
+    return distance;
+}
+
+
+void Menu::twoOpt(Graph<int>* g, vector<int>& minPath, double& minDist) {
+    int n = g->getNumVertex();
+    bool improve = true;
+
+    while (improve) {
+        improve = false;
+        for (int i = 1; i < n - 2; ++i) {
+            for (int j = i + 1; j < n - 1; ++j) {
+                swap(minPath[i], minPath[j]);
+                double newDist = distancePath(g, minPath);
+                if (newDist < minDist) {
+                    improve = true;
+                    minDist = newDist;
+                } else {
+                    swap(minPath[i], minPath[j]);
+                }
+            }
+        }
+    }
+}
+
+
 
 
 bool existsPath(Graph<int>& graph, int infoOrig, int infoDest) {
@@ -181,15 +222,17 @@ void backtrack(Graph<int>& graph, vector<int>& currentPath, vector<int>& bestPat
             Vertex<int>* nextVert = graph.findVertex(i);
 
             if (existsPath(graph, currentPath[pathSize - 1], i) && !nextVert->isVisited()) {
-                nextVert->setVisited(true);
                 double dist = calculateDistance(graph, currentPath[pathSize - 1], i);
-                nextVert->setDist(dist);
-                currentPath.push_back(i);
+                if (dist < minDistance) {
+                    nextVert->setVisited(true);
+                    nextVert->setDist(dist);
+                    currentPath.push_back(i);
 
-                backtrack(graph, currentPath, bestPath, minDistance);
+                    backtrack(graph, currentPath, bestPath, minDistance);
 
-                nextVert->setVisited(false);
-                currentPath.pop_back();
+                    nextVert->setVisited(false);
+                    currentPath.pop_back();
+                }
             }
         }
     }
