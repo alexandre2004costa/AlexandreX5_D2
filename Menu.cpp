@@ -8,6 +8,41 @@
 #include <cmath>
 #include <unordered_map>
 
+double pi=3.14159265358979323846;
+double earthradius=6371000; //meters
+/**
+ * @brief Converts degrees to radians.
+ * @param coord Value of the coordinate in degrees.
+ * @return Value of the coordinate in radians.
+ */
+double toRadians(double coord){
+    return coord*pi/180.0;
+}
+
+/**
+ * @brief Gives the Haversine distance between two coordinates.
+ * @param lat1 Latitude of the first point in degrees.
+ * @param lon1 Longitude of the first point in degrees.
+ * @param lat2 Latitude of the second point in degrees.
+ * @param lon2 Longitude of the second point in degrees.
+ * @return The Haversine distance between the two points in meters.
+ */
+double haversineDistance(double lat1, double lon1, double lat2, double lon2){
+    double radLat1=toRadians(lat1);
+    double radLon1=toRadians(lon1);
+    double radLat2=toRadians(lat2);
+    double radLon2=toRadians(lon2);
+
+    double deltaLat=radLat2-radLat1;
+    double deltaLon=radLon2-radLon1;
+
+    double a=sin(deltaLat/2)*sin(deltaLat/2)+cos(radLat1)*cos(radLat2)*sin(deltaLon/2)*sin(deltaLon/2);
+    double c=2.0*atan2(sqrt(a), sqrt(1.0-a));
+
+    return earthradius*c;
+}
+
+
 /**
  * @brief Shows if exists a cycle between two vertices in the graph.
  * This function does a breadth-first search (BFS) starting in vertex s to see if exists a
@@ -448,30 +483,6 @@ long double Menu::nearestNeighborTSP(Graph<int> *graph, vector<int>& minPath, in
     return res;
 }
 
-/**
- * @brief Converts degrees to radians.
- * @param coord Value of the coordinate in degrees.
- * @return Value of the coordinate in radians.
- */
-double Menu::toRadians(double coord){
-    return coord*pi/180.0;
-}
-
-/**
- * @brief Gives the Haversine distance between two coordinates.
- * @param lat1 Latitude of the first point in degrees.
- * @param lon1 Longitude of the first point in degrees.
- * @param lat2 Latitude of the second point in degrees.
- * @param lon2 Longitude of the second point in degrees.
- * @return The Haversine distance between the two points in meters.
- */
-double Menu::haversineDistance(double lat1, double lon1, double lat2, double lon2){
-    double radLat1=toRadians(lat1);
-    double radLon1=toRadians(lon1);
-    double radLat2=toRadians(lat2);
-    double radLon2=toRadians(lon2);
-    return earthradius*c;
-}
 
 vector<Vertex<int>*> Menu::prim(Graph<int> * g){
     if (g->getVertexSet().empty()) {
