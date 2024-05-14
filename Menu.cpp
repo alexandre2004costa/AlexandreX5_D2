@@ -6,29 +6,18 @@
 #include <stack>
 #include <set>
 #include <cmath>
+#include <unordered_map>
 
-double pi=3.14159265358979323846;
-double earthradius=6371000; //meters
-
-double toRadians(double coord){
-    return coord*pi/180.0;
-}
-double haversineDistance(double lat1, double lon1, double lat2, double lon2){
-    double radLat1=toRadians(lat1);
-    double radLon1=toRadians(lon1);
-    double radLat2=toRadians(lat2);
-    double radLon2=toRadians(lon2);
-
-    double deltaLat=radLat2-radLat1;
-    double deltaLon=radLon2-radLon1;
-
-    double a=sin(deltaLat/2)*sin(deltaLat/2)+cos(radLat1)*cos(radLat2)*sin(deltaLon/2)*sin(deltaLon/2);
-    double c=2.0*atan2(sqrt(a), sqrt(1.0-a));
-
-    return earthradius*c;
-}
-
-
+/**
+ * @brief Shows if exists a cycle between two vertices in the graph.
+ * This function does a breadth-first search (BFS) starting in vertex s to see if exists a
+ * path from vertex s to t. If that path exists there is a cycle between vertices s and t.
+ * @tparam T The type of the vertices.
+ * @param s Pointer to the source vertex.
+ * @param t Pointer to the target vertex.
+ * @param size Number of vertices in the graph.
+ * @return It returns true if exists a cycle between vertices s and t. False if it doesn't exist.
+ */
 template <class T>
 bool isCycle(Vertex<T> *s, Vertex<T> *t, int size){
     if (s == t) return true;
@@ -88,7 +77,7 @@ double Menu::greedyHeuristica(Graph<int> * g, vector<int>& minPath){
 }
 
 
-double Menu::randomSwap(Graph<int> * g, vector<int>& minPath, double minDist) {
+double Menu::randomSwap(Graph<int>* g, vector<int>& minPath, double minDist) {
     double minDistS = minDist;
     int size = g->getNumVertex()-1;
 
@@ -155,6 +144,47 @@ double Menu::randomSwap(Graph<int> * g, vector<int>& minPath, double minDist) {
 }
 
 
+double distancePath(Graph<int>* g, vector<int>& path) {
+    double distance = 0;
+    int n = path.size();
+    for (int i = 0; i < n - 1; i++) {
+        for (auto edge: g->findVertex(path[i])->getAdj()) {
+            if (edge->getPair().second->getInfo() == path[i+1])
+                distance += edge->getWeight();
+        }
+    }
+
+    for (auto edge: g->findVertex(path[n - 1])->getAdj()) {
+        if (edge->getPair().second->getInfo() == path[0])
+            distance += edge->getWeight();
+    }
+
+    return distance;
+}
+
+
+void Menu::twoOpt(Graph<int>* g, vector<int>& minPath, double& minDist) {
+    int n = g->getNumVertex();
+    bool improve = true;
+
+    while (improve) {
+        improve = false;
+        for (int i = 1; i < n - 2; ++i) {
+            for (int j = i + 1; j < n - 1; ++j) {
+                swap(minPath[i], minPath[j]);
+                double newDist = distancePath(g, minPath);
+                if (newDist < minDist) {
+                    improve = true;
+                    minDist = newDist;
+                } else {
+                    swap(minPath[i], minPath[j]);
+                }
+            }
+        }
+    }
+}
+
+
 
 
 bool existsPath(Graph<int>& graph, int infoOrig, int infoDest) {
@@ -170,6 +200,7 @@ double calculateDistance(Graph<int>& graph, int infoLast, int infoNext) {
     for (auto edge: graph.findVertex(infoLast)->getAdj())
         if (edge->getVertex(graph.findVertex(infoLast))->getInfo() == infoNext)
             return (distance + edge->getWeight());
+    return 0;
 }
 
 
@@ -191,15 +222,17 @@ void backtrack(Graph<int>& graph, vector<int>& currentPath, vector<int>& bestPat
             Vertex<int>* nextVert = graph.findVertex(i);
 
             if (existsPath(graph, currentPath[pathSize - 1], i) && !nextVert->isVisited()) {
-                nextVert->setVisited(true);
                 double dist = calculateDistance(graph, currentPath[pathSize - 1], i);
-                nextVert->setDist(dist);
-                currentPath.push_back(i);
+                if (dist < minDistance) {
+                    nextVert->setVisited(true);
+                    nextVert->setDist(dist);
+                    currentPath.push_back(i);
 
-                backtrack(graph, currentPath, bestPath, minDistance);
+                    backtrack(graph, currentPath, bestPath, minDistance);
 
-                nextVert->setVisited(false);
-                currentPath.pop_back();
+                    nextVert->setVisited(false);
+                    currentPath.pop_back();
+                }
             }
         }
     }
@@ -386,7 +419,6 @@ long double Menu::nearestNeighborTSP(Graph<int> *graph, vector<int>& minPath, in
     int numVertices = graph->getNumVertex();
     minPath.push_back(inicialVertex);
     auto v = graph->findVertex(inicialVertex);
-
     for (int i = 0; i < numVertices - 1; i++) {
         int nearestNeighbor = -1;
         double minDistance = numeric_limits<double>::infinity();
@@ -416,5 +448,91 @@ long double Menu::nearestNeighborTSP(Graph<int> *graph, vector<int>& minPath, in
     return res;
 }
 
+/**
+ * @brief Converts degrees to radians.
+ * @param coord Value of the coordinate in degrees.
+ * @return Value of the coordinate in radians.
+ */
+double Menu::toRadians(double coord){
+    return coord*pi/180.0;
+}
 
+/**
+ * @brief Gives the Haversine distance between two coordinates.
+ * @param lat1 Latitude of the first point in degrees.
+ * @param lon1 Longitude of the first point in degrees.
+ * @param lat2 Latitude of the second point in degrees.
+ * @param lon2 Longitude of the second point in degrees.
+ * @return The Haversine distance between the two points in meters.
+ */
+double Menu::haversineDistance(double lat1, double lon1, double lat2, double lon2){
+    double radLat1=toRadians(lat1);
+    double radLon1=toRadians(lon1);
+    double radLat2=toRadians(lat2);
+    double radLon2=toRadians(lon2);
+    return earthradius*c;
+}
+
+vector<Vertex<int>*> Menu::prim(Graph<int> * g){
+    if (g->getVertexSet().empty()) {
+        return g->getVertexSet();
+    }
+
+    for(auto v : g->getVertexSet()) {
+        v->setDist(INF);
+        v->setPath(nullptr);
+        v->setVisited(false);
+    }
+
+    Vertex<int>* s = g->getVertexSet().front();
+    s->setDist(0);
+
+    MutablePriorityQueue<Vertex<int>> q;
+    q.insert(s);
+
+    while(!q.empty()) {
+
+        auto v = q.extractMin();
+        v->setVisited(true);
+
+        for(auto &e : v->getAdj()) {
+            Vertex<int>* w = e->getVertex(v);
+
+            if (!w->isVisited()) {
+                auto oldDist = w->getDist();
+
+                if(e->getWeight() < oldDist) {
+                    w->setDist(e->getWeight());
+                    w->setPath(e);
+
+                    if (oldDist == INF) {
+                        q.insert(w);
+                    }
+
+                    else {
+                        q.decreaseKey(w);
+                    }
+                }
+            }
+        }
+    }
+    return g->getVertexSet();
+}
+
+double Menu::triangularApproximation(Graph<int>* g, vector<int>& minPath){
+    double r=0;
+    vector p=prim(g);
+    for(auto i=0; i<p.size(); i++){
+        r+=p[i]->getDist();
+        //cout<<p[i]->getDist()<<endl;
+        minPath.push_back(p[i]->getInfo());
+    }
+
+    Vertex<int> * ultimo=p[p.size()-1];
+
+    r+=ultimo->getWeightTo(p[p.size()-2]->getInfo());
+    //cout<<ultimo->getWeightTo(p[p.size()-2]->getInfo())<<endl;
+
+    return r;
+}
 
