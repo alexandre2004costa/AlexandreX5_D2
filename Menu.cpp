@@ -301,7 +301,7 @@ void BestMatch(Graph<T> *g) {
         if (static_cast<int>(v->getDist()) % 2 != 0) oddVertex.push_back(v);
         if (v->getPath() == nullptr ) continue;
         for (auto e : v->getAdj()){
-            if (e == v->getPath()){
+            if (e == v->getPath() || (e->getPair().first == v->getPath()->getPair().second) && (e->getPair().second == v->getPath()->getPair().first)){
                 v->addConnect(e);
                 e->getVertex(v)->addConnect(e);
             }
@@ -384,7 +384,8 @@ void Tsp(vector<Edge<int>*> &path, double &cost, Graph<T> *g){
         if (actualV != lastV){
             //cout << "de " << lastV << " para " << actualV << endl;
             double v = g->findVertex(actualV)->getWeightTo(lastV);
-            if (v == -1) cout << "Error here";
+            if (v == -1)
+                cost += haversineDistance(g->findVertex(actualV)->getLatitude(), g->findVertex(actualV)->getLongitude(), g->findVertex(lastV)->getLatitude(), g->findVertex(lastV)->getLongitude());
             else cost += v;
             lastV = actualV;
         }
@@ -394,8 +395,9 @@ void Tsp(vector<Edge<int>*> &path, double &cost, Graph<T> *g){
     }
     //cout << "de " << actualV << " para " << 0 << endl;
     double v = g->findVertex(0)->getWeightTo(actualV);
-    if (v == -1) cout << "Error here";
-    else cost += v;
+    if (v == -1) {
+        cost += haversineDistance(g->findVertex(0)->getLatitude(), g->findVertex(0)->getLongitude(), g->findVertex(actualV)->getLatitude(), g->findVertex(actualV)->getLongitude());
+    }else cost += v;
 
 }
 
@@ -411,8 +413,40 @@ double Menu::Cristofides(Graph<int> * g, vector<int>& minPath){
     return cost;
 }
 
-double pi=3.14159265358979323846;
-double earthradius=6371000; //meters
+long double Menu::nearestNeighborTSP(Graph<int> *graph, vector<int>& minPath, int inicialVertex){
+    long double res = 0;
+    for (auto v : graph->getVertexSet()) v->setVisited(false);
+    int numVertices = graph->getNumVertex();
+    minPath.push_back(inicialVertex);
+    auto v = graph->findVertex(inicialVertex);
+    for (int i = 0; i < numVertices - 1; i++) {
+        int nearestNeighbor = -1;
+        double minDistance = numeric_limits<double>::infinity();
+        v->setVisited(true);
+
+        for (auto e : v->getAdj()){
+            auto d = e->getVertex(v);
+            if(!d->isVisited()){
+                double distance = e->getWeight();
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    nearestNeighbor = d->getInfo();
+                }
+            }
+        }
+        res += minDistance;
+        if (nearestNeighbor == -1) return 0;
+
+        minPath.push_back(nearestNeighbor);
+        v = graph->findVertex(nearestNeighbor);
+        if (i + 1 >= numVertices - 1){
+            auto k =  v->getWeightTo(0);
+            if (k == -1) cout << "no edge to return to 0";
+            else res += v->getWeightTo(0);
+        }
+    }
+    return res;
+}
 
 /**
  * @brief Converts degrees to radians.
@@ -436,18 +470,8 @@ double Menu::haversineDistance(double lat1, double lon1, double lat2, double lon
     double radLon1=toRadians(lon1);
     double radLat2=toRadians(lat2);
     double radLon2=toRadians(lon2);
-
-    double deltaLat=radLat2-radLat1;
-    double deltaLon=radLon2-radLon1;
-
-    double a=sin(deltaLat/2)*sin(deltaLat/2)+cos(radLat1)*cos(radLat2)*sin(deltaLon/2)*sin(deltaLon/2);
-    double c=2.0*atan2(sqrt(a), sqrt(1.0-a));
-
     return earthradius*c;
 }
-
-
-//PRIMMMMMMMMMMMMMMMMMMM
 
 vector<Vertex<int>*> Menu::prim(Graph<int> * g){
     if (g->getVertexSet().empty()) {
@@ -511,5 +535,4 @@ double Menu::triangularApproximation(Graph<int>* g, vector<int>& minPath){
 
     return r;
 }
-
 
