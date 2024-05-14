@@ -484,7 +484,9 @@ long double Menu::nearestNeighborTSP(Graph<int> *graph, vector<int>& minPath, in
 }
 
 
+
 vector<Vertex<int>*> Menu::prim(Graph<int> * g){
+    vector<Vertex<int> *> vetor={};
     if (g->getVertexSet().empty()) {
         return g->getVertexSet();
     }
@@ -505,10 +507,9 @@ vector<Vertex<int>*> Menu::prim(Graph<int> * g){
 
         auto v = q.extractMin();
         v->setVisited(true);
-
+        vetor.push_back(v);
         for(auto &e : v->getAdj()) {
             Vertex<int>* w = e->getVertex(v);
-
             if (!w->isVisited()) {
                 auto oldDist = w->getDist();
 
@@ -527,23 +528,35 @@ vector<Vertex<int>*> Menu::prim(Graph<int> * g){
             }
         }
     }
-    return g->getVertexSet();
+    return vetor;
 }
 
 double Menu::triangularApproximation(Graph<int>* g, vector<int>& minPath){
     double r=0;
-    vector p=prim(g);
-    for(auto i=0; i<p.size(); i++){
+    vector vetor=prim(g);
+  /*  for(auto i=0; i<p.size(); i++){
         r+=p[i]->getDist();
         //cout<<p[i]->getDist()<<endl;
         minPath.push_back(p[i]->getInfo());
+    }*/
+
+    for(auto i=0; i<vetor.size(); i++){
+        minPath.push_back(vetor[i]->getInfo());
+        r+=vetor[i]->getDist();
+        cout<<vetor[i]->getDist()<<endl;
     }
+   // Vertex<int> * ultimo=p[p.size()-1];
+    Vertex<int> * ultimo=vetor[vetor.size()-1];
+   // cout<<ultimo->getInfo()<<endl;
+   // cout<<vetor[vetor.size()-2]->getInfo()<<endl;
 
-    Vertex<int> * ultimo=p[p.size()-1];
+    r+=vetor[0]->getWeightTo(ultimo->getInfo());
+   // cout<<vetor[0]->getWeightTo(ultimo->getInfo())<<endl;
 
-    r+=ultimo->getWeightTo(p[p.size()-2]->getInfo());
-    //cout<<ultimo->getWeightTo(p[p.size()-2]->getInfo())<<endl;
 
+    /*for(auto i=0; i<g->getVertexSet().size(); i++){
+        cout<<g->getVertexSet()[i]->getDist()<<endl;
+    }*/
     return r;
 }
 

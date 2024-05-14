@@ -5,10 +5,10 @@
 
 int main() {
 
-    /*DisplayMenu displayMenu = DisplayMenu();
-    displayMenu.OpenMenu();*/
+    DisplayMenu displayMenu = DisplayMenu();
+    displayMenu.OpenMenu();
 
-    Graph<int>* graph = new Graph<int>();
+   /* Graph<int>* graph = new Graph<int>();
     vector<int> min;
     Data::loadGraph(graph, "edges2.csv", true);
     cout << "lido " << endl;
@@ -20,7 +20,7 @@ int main() {
     }
 
     auto end = std::chrono::high_resolution_clock::now();
-    auto duration1 = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+    auto duration1 = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);*/
 
     return 0;
 }
