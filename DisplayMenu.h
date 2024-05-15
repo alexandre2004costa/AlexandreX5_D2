@@ -20,7 +20,7 @@ class DisplayMenu {
         void SelectGraphReal();
         void SelectGraphConnect(string nodeFile);
         void Base();
-        void ShowResults(int option, double minDist, vector<int> minPath);
+        void ShowResults(int option, double minDist, vector<int> minPath, chrono::duration<double> time);
         void askContinue();
 };
 
