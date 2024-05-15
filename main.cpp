@@ -1,14 +1,14 @@
 
 #include "DisplayMenu.h"
-#include "Menu.h"
-#include <chrono>
 
 int main() {
-
     DisplayMenu displayMenu = DisplayMenu();
-    displayMenu.OpenMenu();
+    displayMenu.SelectGraphType();
+    return 0;
+}
 
-   /* Graph<int>* graph = new Graph<int>();
+#include <chrono>
+/* Graph<int>* graph = new Graph<int>();
     vector<int> min;
     Data::loadGraph(graph, "edges2.csv", true);
     cout << "lido " << endl;
@@ -21,6 +21,3 @@ int main() {
 
     auto end = std::chrono::high_resolution_clock::now();
     auto duration1 = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);*/
-
-    return 0;
-}
