@@ -212,11 +212,12 @@ void DisplayMenu::Base(){
             ShowResults(option, minDist, minPath);
             break;
         case 3:
-            minDist = Menu::triangularApproximation(graph, minPath);
+            minDist = Menu::nearestNeighborTSP(graph, minPath, 0);
             ShowResults(option, minDist, minPath);
             break;
         case 4:
             minDist = Menu::greedyHeuristica(graph, minPath);
+            //minDist = Menu::simulatedAnnealing(graph, minPath);
             //for (int i = 0; i < 100000; i++) {
             //    minDist = Menu::randomSwap(graph, minPath, minDist);
             //}

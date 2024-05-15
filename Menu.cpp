@@ -560,3 +560,34 @@ double Menu::triangularApproximation(Graph<int>* g, vector<int>& minPath){
     return r;
 }
 
+
+
+
+double Menu::simulatedAnnealing(Graph<int>* graph, vector<int>& minPath) {
+    random_device rd; mt19937 generator(rd());
+    uniform_real_distribution<double> distribution(0.0, 1.0);
+    double temperature = 1, coolRate = 0.8;
+
+    // 1 - Initial solution for path
+    double minDist = greedyHeuristica(graph, minPath);
+
+    // 2 - Loop for temperature
+    while (temperature > 0.1) {
+        // 3 - New solution for path : 2-opt
+        vector<int> newPath = minPath; double newDist = minDist;
+        twoOpt(graph, newPath, newDist);
+
+        // 4 - Check probability
+        double deltaDist = minDist - newDist;
+        bool prob = exp(deltaDist / temperature) > distribution(generator);
+        if ((newDist < minDist) || prob) {
+            minPath = newPath;
+            minDist = newDist;
+        }
+
+        // 5 - Update temperature
+        temperature *= coolRate;
+    }
+
+    return minDist;
+}
