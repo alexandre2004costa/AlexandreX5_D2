@@ -221,7 +221,15 @@ void Menu::twoOpt(Graph<int>* g, vector<int>& minPath, double& minDist) {
 
 
 
-
+/**
+ * @brief Sees if there is a path between two vertices in the graph.
+ * This function sees if there is a path from a source to a destination vertex.
+ * @param graph Graph.
+ * @param infoOrig Source vertex info.
+ * @param infoDest Destination vertex info.
+ * @return It is true if there is a path between the source and destination vertices.
+ * @details Complexity-> O(n), n is the average number of edges in each vertex.
+ */
 bool existsPath(Graph<int>& graph, int infoOrig, int infoDest) {
     for (auto edge: graph.findVertex(infoOrig)->getAdj())
         if (edge->getVertex(graph.findVertex(infoOrig))->getInfo() == infoDest)
@@ -229,6 +237,15 @@ bool existsPath(Graph<int>& graph, int infoOrig, int infoDest) {
     return false;
 }
 
+/**
+ * @brief Shows the distance between two vertices.
+ * This function calculates the distance between two vertices in the graph.
+ * @param graph Graph.
+ * @param infoLast Source vertex info.
+ * @param infoNext Destination vertex info.
+ * @return The distance of the source to the destination vertices if exists a direct edge between them and 0 if it doesn't exist.
+ * @details Complexity-> O(n), n is the number of edges adjacent to the vertex with the information infoLast.
+ */
 double calculateDistance(Graph<int>& graph, int infoLast, int infoNext) {
     double distance = graph.findVertex(infoLast)->getDist();
 
