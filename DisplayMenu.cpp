@@ -158,7 +158,7 @@ void DisplayMenu::SelectGraphReal() {
     switch (option){
         case 1:
             Data::loadGraph(graph, "edges1.csv", true);
-            Data::loadNodesInfo(graph, "nodes1.csv");
+            //Data::loadNodesInfo(graph, "nodes1.csv");
             Base();
             break;
         case 2:
@@ -204,30 +204,45 @@ void DisplayMenu::Base(){
 
     int option = stoi(k);
     double minDist; vector<int> minPath;
+    chrono::time_point<chrono::high_resolution_clock> start;
+    chrono::time_point<chrono::high_resolution_clock> end;
+    std::chrono::duration<double> time;
     switch (option){
         case 1:
             SelectGraphType();
             break;
         case 2:
+            start = std::chrono::high_resolution_clock::now();
             minDist = Menu::Backtracking(*graph, minPath);
-            ShowResults(option, minDist, minPath);
+            end = std::chrono::high_resolution_clock::now();
+            time = end - start;
+            ShowResults(option, minDist, minPath, time);
             break;
         case 3:
+            start = std::chrono::high_resolution_clock::now();
             minDist = Menu::triangularApproximation(graph, minPath);
             //minDist = Menu::nearestNeighborTSP(graph, minPath, 0);
-            ShowResults(option, minDist, minPath);
+            end = std::chrono::high_resolution_clock::now();
+            time = end - start;
+            ShowResults(option, minDist, minPath, time);
             break;
         case 4:
+            start = std::chrono::high_resolution_clock::now();
             minDist = Menu::greedyHeuristica(graph, minPath);
             //minDist = Menu::simulatedAnnealing(graph, minPath);
             //for (int i = 0; i < 100000; i++) {
             //    minDist = Menu::randomSwap(graph, minPath, minDist);
             //}
             //Menu::twoOpt(graph, minPath, minDist);
-            ShowResults(option, minDist, minPath);
+            end = std::chrono::high_resolution_clock::now();
+            time = end - start;
+            ShowResults(option, minDist, minPath, time);
             break;
         case 5:
-            cout << Menu::Cristofides(graph, minPath) << endl;
+            start = std::chrono::high_resolution_clock::now();
+            minDist = Menu::Cristofides(graph, minPath);
+            end = std::chrono::high_resolution_clock::now();
+            ShowResults(option, minDist, minPath, time);
             askContinue();
             break;
         case 0:
@@ -239,7 +254,7 @@ void DisplayMenu::Base(){
 }
 
 
-void DisplayMenu::ShowResults(int option, double minDist, vector<int> minPath) {
+void DisplayMenu::ShowResults(int option, double minDist, vector<int> minPath, chrono::duration<double> time) {
     switch (option){
         case 2:
             cout << "--------------------| Backtracking Algorithm |--------------------" << endl;
@@ -262,8 +277,9 @@ void DisplayMenu::ShowResults(int option, double minDist, vector<int> minPath) {
     cout << " Path: ";
     for (int i: minPath)
         cout << i << " -> ";
-    cout << "0" << endl << endl << endl;
+    cout << "0" << endl;
 
+    cout << " Duration: " << time.count() << " seconds" << endl << endl << endl;
     askContinue();
 }
 
