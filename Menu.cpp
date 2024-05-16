@@ -82,6 +82,8 @@ double Menu::greedyHeuristica(Graph<int> * g, vector<int>& minPath){
             if (v->getInfo() < e->getVertex(v)->getInfo()) allEdges.push_back(e);
         }
     }
+
+    int count = 0;
     sort(allEdges.begin(), allEdges.end(), [](Edge<int> *a, Edge<int> *b) { return a->getWeight() < b->getWeight(); });
     double totalWeight = 0;
         for (auto e : allEdges) {
@@ -94,7 +96,10 @@ double Menu::greedyHeuristica(Graph<int> * g, vector<int>& minPath){
                     totalWeight += e->getWeight();
                     v1->addConnect(e);
                     v2->addConnect(e);
+                    count++;
                 }
+
+                if (count >= (g->getNumVertex() )) {break; }
         }
     auto v = g->findVertex(0);
     int lastV = 0;

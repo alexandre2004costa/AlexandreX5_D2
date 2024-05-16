@@ -36,10 +36,12 @@ void Data::loadGraph(Graph<int> *graph, string fileName, bool first_line) {
     }
 
     /*
-    for (auto e: graph->findVertex(0)->getAdj()) {
-                auto v1 = e->getPair().first;
-                auto v2 = e->getPair().second;
-                cout << v1->getInfo() << " : " << v2->getInfo() << " - " << e->getWeight() << endl;
+    for (auto v: graph->getVertexSet()) {
+        for (auto e: v->getAdj()) {
+            auto v1 = e->getPair().first;
+            auto v2 = e->getPair().second;
+            cout << v1->getInfo() << " : " << v2->getInfo() << " - " << e->getWeight() << endl;
+        }
     }
 
     for (auto v: graph->getVertexSet()) {
