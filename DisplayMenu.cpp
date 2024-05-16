@@ -158,6 +158,7 @@ void DisplayMenu::SelectGraphReal() {
     switch (option){
         case 1:
             Data::loadGraph(graph, "edges1.csv", true);
+            Data::loadNodesInfo(graph, "nodes1.csv");
             Base();
             break;
         case 2:
@@ -212,7 +213,8 @@ void DisplayMenu::Base(){
             ShowResults(option, minDist, minPath);
             break;
         case 3:
-            minDist = Menu::nearestNeighborTSP(graph, minPath, 0);
+            minDist = Menu::triangularApproximation(graph, minPath);
+            //minDist = Menu::nearestNeighborTSP(graph, minPath, 0);
             ShowResults(option, minDist, minPath);
             break;
         case 4:

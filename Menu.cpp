@@ -566,7 +566,7 @@ double Menu::triangularApproximation(Graph<int>* g, vector<int>& minPath){
 double Menu::simulatedAnnealing(Graph<int>* graph, vector<int>& minPath) {
     random_device rd; mt19937 generator(rd());
     uniform_real_distribution<double> distribution(0.0, 1.0);
-    double temperature = 1, coolRate = 0.8;
+    double temperature = 1, coolRate = 0.3;
 
     // 1 - Initial solution for path
     double minDist = greedyHeuristica(graph, minPath);
