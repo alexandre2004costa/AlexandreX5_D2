@@ -304,7 +304,7 @@ double Menu::Backtracking(Graph<int>& graph, vector<int>& minPath) {
     backtrack(graph, currentPath, minPath, minDistance);
     return minDistance;
 }
-template <class T>
+/*template <class T>
 void prim(Graph<T> * g) {
     for(auto v : g->getVertexSet()) {
         v->setDist(INF);
@@ -335,7 +335,7 @@ void prim(Graph<T> * g) {
             }
         }
     }
-}
+}*/
 
 template <class T>
 void BestMatch(Graph<T> *g) {
@@ -454,7 +454,7 @@ void Tsp(vector<Edge<int>*> &path, double &cost, Graph<T> *g){
 }
 
 double Menu::Cristofides(Graph<int> * g, vector<int>& minPath){
-    prim(g);
+    //prim(g);
     BestMatch(g);
     vector<Edge<int>*> eulerian;
     findEulerianCircuit(g->findVertex(0), eulerian);
@@ -500,6 +500,15 @@ long double Menu::nearestNeighborTSP(Graph<int> *graph, vector<int>& minPath, in
     return res;
 }
 
+/*vector<Vertex<int> *> vetor={};
+bool Menu::existsInVector(int info) {
+    for (auto v : vetor) {
+        if (v->getInfo()==info) {
+            return true;
+        }
+    }
+    return false;
+}*/
 
 
 vector<Vertex<int>*> Menu::prim(Graph<int> * g){
@@ -523,11 +532,15 @@ vector<Vertex<int>*> Menu::prim(Graph<int> * g){
     while(!q.empty()) {
 
         auto v = q.extractMin();
+        if(v->getVisited()==false){
+            cout << v->getInfo() << v->getVisited() <<endl;
+        vetor.push_back(v);}
         v->setVisited(true);
-        vetor.push_back(v);
         for(auto &e : v->getAdj()) {
             Vertex<int>* w = e->getVertex(v);
             if (!w->isVisited()) {
+               // if(existsInVector(v->getInfo())==false){
+
                 auto oldDist = w->getDist();
 
                 if(e->getWeight() < oldDist) {
@@ -560,7 +573,7 @@ double Menu::triangularApproximation(Graph<int>* g, vector<int>& minPath){
     for(auto i=0; i<vetor.size(); i++){
         minPath.push_back(vetor[i]->getInfo());
         r+=vetor[i]->getDist();
-        cout<<vetor[i]->getDist()<<endl;
+        //cout<<vetor[i]->getDist()<<endl;
     }
    // Vertex<int> * ultimo=p[p.size()-1];
     Vertex<int> * ultimo=vetor[vetor.size()-1];

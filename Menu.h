@@ -3,6 +3,7 @@
 #define PROJETO2_MENU_H
 
 #include "DataStructures/Graph.h"
+#include <unordered_set>
 
 class Menu {
 
@@ -17,6 +18,7 @@ public:
     double toRadians(double coord);
     static vector<Vertex<int>*> prim(Graph<int> * g);
     static double triangularApproximation(Graph<int>* graph, vector<int>& minPath);
+    static bool existsInVector(int info);
 
 };
 

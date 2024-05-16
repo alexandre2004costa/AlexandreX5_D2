@@ -52,6 +52,9 @@ public:
     void setLongitude(double l);
 
     friend class MutablePriorityQueue<Vertex>;
+
+    bool getVisited();
+
 protected:
     T info;                // info node
     std::vector<Edge<T> *> adj;  // outgoing and incoming edges
@@ -66,6 +69,9 @@ protected:
 
     //New
     std::vector<Edge<T> *> connects;
+
+    bool getVisited(Vertex<int> *v);
+
 };
 
 /********************** Edge  ****************************/
@@ -219,6 +225,11 @@ void Vertex<T>::setInfo(T in) {
 template <class T>
 void Vertex<T>::setVisited(bool visited) {
     this->visited = visited;
+}
+
+template <class T>
+bool Vertex<T>::getVisited() {
+    return this->visited;
 }
 
 template <class T>

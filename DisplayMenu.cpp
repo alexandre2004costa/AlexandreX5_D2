@@ -239,6 +239,7 @@ void DisplayMenu::Base(){
             start = std::chrono::high_resolution_clock::now();
             minDist = Menu::Cristofides(graph, minPath);
             end = std::chrono::high_resolution_clock::now();
+            time = end - start;
             ShowResults(option, minDist, minPath, time);
             askContinue();
             break;
