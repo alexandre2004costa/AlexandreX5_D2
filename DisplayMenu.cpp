@@ -158,6 +158,7 @@ void DisplayMenu::SelectGraphReal() {
     switch (option){
         case 1:
             Data::loadGraph(graph, "edges1.csv", true);
+            Data::loadNodesInfo(graph, "nodes1.csv");
             Base();
             break;
         case 2:
@@ -166,6 +167,7 @@ void DisplayMenu::SelectGraphReal() {
             break;
         case 3:
             Data::loadGraph(graph, "edges3.csv", true);
+            Data::loadNodesInfo(graph, "nodes3.csv");
             Base();
             break;
         case 0:
