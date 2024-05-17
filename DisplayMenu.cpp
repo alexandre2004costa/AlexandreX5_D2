@@ -248,6 +248,7 @@ void DisplayMenu::SelectGraphConnect(string nodeFile) {
 
 
 void DisplayMenu::Base(){
+    cout << graph->getNumVertex() << endl;
     cout << "-----------------------------| Menu |-----------------------------" << endl;
     cout << " 1-> Select the graph" << endl;
     cout << " 2-> Backtracking Algorithm" << endl;
@@ -303,7 +304,7 @@ void DisplayMenu::Base(){
             break;
         case 5:
             start = std::chrono::high_resolution_clock::now();
-            minDist = Menu::Cristofides(graph, minPath);
+            //minDist = Menu::Cristofides(graph, minPath);
             end = std::chrono::high_resolution_clock::now();
             ShowResults(option, minDist, minPath, time);
             askContinue();

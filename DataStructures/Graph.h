@@ -10,6 +10,7 @@
 #include <queue>
 #include <limits>
 #include <algorithm>
+#include <unordered_map>
 #include "MutablePriorityQueue.h"
 using namespace std;
 
@@ -110,7 +111,7 @@ public:
     bool addBidirectionalEdge(const T &sourc, const T &dest, double w);
 
     int getNumVertex() const;
-    std::vector<Vertex<T> *> getVertexSet() const;
+    unordered_map<T, Vertex<T> *> getVertexSet() const;
 
     std:: vector<T> dfs() const;
     std:: vector<T> dfs(const T & source) const;
@@ -121,7 +122,7 @@ public:
     bool dfsIsDAG(Vertex<T> *v) const;
     std::vector<T> topsort() const;
 protected:
-    std::vector<Vertex<T> *> vertexSet;    // vertex set
+    std::unordered_map<T, Vertex<T> *> vertexSet;    // vertex set
 
     double ** distMatrix = nullptr;   // dist matrix for Floyd-Warshall
     int **pathMatrix = nullptr;   // path matrix for Floyd-Warshall
@@ -308,7 +309,7 @@ int Graph<T>::getNumVertex() const {
 }
 
 template <class T>
-std::vector<Vertex<T> *> Graph<T>::getVertexSet() const {
+unordered_map<T, Vertex<T> *> Graph<T>::getVertexSet() const {
     return vertexSet;
 }
 
@@ -317,10 +318,9 @@ std::vector<Vertex<T> *> Graph<T>::getVertexSet() const {
  */
 template <class T>
 Vertex<T> * Graph<T>::findVertex(const T &in) const {
-    for (auto v : vertexSet)
-        if (v->getInfo() == in)
-            return v;
-    return nullptr;
+    auto r = vertexSet.find(in);
+    if (r == vertexSet.end()) return nullptr;
+    else return r->second;
 }
 
 /*
@@ -341,7 +341,7 @@ template <class T>
 bool Graph<T>::addVertex(const T &in) {
     if (findVertex(in) != nullptr)
         return false;
-    vertexSet.push_back(new Vertex<T>(in));
+    vertexSet.insert({in, new Vertex<T>(in)});
     return true;
 }
 
@@ -351,6 +351,7 @@ bool Graph<T>::addVertex(const T &in) {
  *  all outgoing and incoming edges.
  *  Returns true if successful, and false if such vertex does not exist.
  */
+/*
 template <class T>
 bool Graph<T>::removeVertex(const T &in) {
     for (auto it = vertexSet.begin(); it != vertexSet.end(); it++) {
@@ -366,7 +367,7 @@ bool Graph<T>::removeVertex(const T &in) {
         }
     }
     return false;
-}
+}*/
 
 /*
  * Adds an edge to a graph (this), given the contents of the source and

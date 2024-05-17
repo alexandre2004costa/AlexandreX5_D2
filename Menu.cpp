@@ -77,7 +77,8 @@ bool isCycle(Vertex<T> *s, Vertex<T> *t, int size){
 
 double Menu::greedyHeuristica(Graph<int> * g, vector<int>& minPath){
     std::vector<Edge<int> *> allEdges;
-    for (auto v: g->getVertexSet()) {
+    for (auto pair: g->getVertexSet()) {
+        auto v = pair.second;
         v->cleanConnect();
         for (auto e: v->getAdj()) {
             if (v->getInfo() < e->getVertex(v)->getInfo()) allEdges.push_back(e);
@@ -91,7 +92,10 @@ double Menu::greedyHeuristica(Graph<int> * g, vector<int>& minPath){
             auto v1 = e->getPair().first;
             auto v2 = e->getPair().second;
             if (v1->getConnects().size() >= 2 || v2->getConnects().size() >= 2) continue;
-            for (auto v: g->getVertexSet()) v->setVisited(false);
+            for (auto pair: g->getVertexSet()){
+                auto v = pair.second;
+                v->setVisited(false);
+            }
             if (v1->getConnects().size() == 0 || v2->getConnects().size() == 0
                 || !isCycle(v2,v1, g->getVertexSet().size())) {
                     totalWeight += e->getWeight();
@@ -298,7 +302,8 @@ void backtrack(Graph<int>& graph, vector<int>& currentPath, vector<int>& bestPat
 
 
 double Menu::Backtracking(Graph<int>& graph, vector<int>& minPath) {
-    for (auto vertex: graph.getVertexSet()) {
+    for (auto pair: graph.getVertexSet()) {
+        auto vertex = pair.second;
         vertex->setVisited(false);
         vertex->setDist(0);
     }
@@ -310,6 +315,7 @@ double Menu::Backtracking(Graph<int>& graph, vector<int>& minPath) {
     backtrack(graph, currentPath, minPath, minDistance);
     return minDistance;
 }
+/*
 template <class T>
 void prim(Graph<T> * g) {
     for(auto v : g->getVertexSet()) {
@@ -469,12 +475,15 @@ double Menu::Cristofides(Graph<int> * g, vector<int>& minPath){
     double cost;
     Tsp(eulerian, cost, g);
     return cost;
-}
+}*/
 
  pair<double,int> Menu::nearestNeighborTSP(Graph<int> *graph, vector<int>& minPath, int inicialVertex){
     stack<Vertex<int>*> s;
     double res = 0;
-    for (auto v : graph->getVertexSet()) v->setVisited(false);
+    for (auto pair : graph->getVertexSet()){
+        auto v = pair.second;
+        v->setVisited(false);
+    }
     int numVertices = graph->getNumVertex();
     minPath.push_back(inicialVertex);
     auto v = graph->findVertex(inicialVertex);
@@ -526,8 +535,10 @@ void Menu::harvesineEdges(Graph<int> * g){
     if (g->getVertexSet().empty()) {
         return;
     }
-    for(auto v: g->getVertexSet()){
-            for(auto v2: g->getVertexSet()){
+    for(auto pair1: g->getVertexSet()){
+        auto v = pair1.second;
+            for(auto pair2: g->getVertexSet()){
+                auto v2 = pair2.second;
                 bool existEdge = false;
                 for(auto e: v->getAdj()){
                     if(e->getPair().second->getInfo() == v2->getInfo()) {
@@ -550,13 +561,14 @@ vector<Vertex<int>*> Menu::prim(Graph<int> * g){
         return vetor;
     }
 
-    for(auto v : g->getVertexSet()) {
+    for(auto pair : g->getVertexSet()) {
+        auto v = pair.second;
         v->setDist(INF);
         v->setPath(nullptr);
         v->setVisited(false);
     }
 
-    Vertex<int>* s = g->getVertexSet().front();
+    Vertex<int>* s = g->findVertex(0);
     s->setDist(0);
 
     MutablePriorityQueue<Vertex<int>> q;
