@@ -18,7 +18,7 @@ public:
     static double Backtracking(Graph<int>& graph, vector<int>& minPath);
     static pair<double,int> nearestNeighborTSP(Graph<int> *graph, vector<int>& minPath, int inicialVertex);
     static double triangularApproximation(Graph<int>* graph, vector<int>& minPath);
-
+    double simulatedAnnealing(Graph<int> *graph, vector<int> &minPath);
 };
 
 
