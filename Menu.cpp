@@ -75,7 +75,7 @@ bool isCycle(Vertex<T> *s, Vertex<T> *t, int size){
     return false;
 }
 
-double Menu::greedyHeuristica(Graph<int> * g, vector<int>& minPath){
+double Menu::greedyHeuristica(Graph<int> * g, set<int>& minPath){
     std::vector<Edge<int> *> allEdges;
     for (auto v: g->getVertexSet()) {
         v->cleanConnect();
@@ -96,11 +96,12 @@ double Menu::greedyHeuristica(Graph<int> * g, vector<int>& minPath){
                     v1->addConnect(e);
                     v2->addConnect(e);
                 }
+
         }
     auto v = g->findVertex(0);
     int lastV = 0;
     do{
-        minPath.push_back(v->getInfo());
+        minPath.insert(v->getInfo());
         for (auto k : v->getConnects()){
             if (k->getVertex(v)->getInfo() != lastV){
                 lastV = v->getInfo();
@@ -491,7 +492,7 @@ double Menu::Cristofides(Graph<int> * g, vector<int>& minPath){
             }
         }
 
-        cout << v->getInfo() << "!" << nearestNeighbor << endl;
+        //cout << v->getInfo() << "!" << nearestNeighbor << endl;
         if (nearestNeighbor == -1) { // NO edge available
             auto k =  v->getWeightTo(inicialVertex);
             if (k != -1) return {res + k,s.size()};

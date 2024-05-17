@@ -229,10 +229,6 @@ void DisplayMenu::Base(){
         case 4:
             start = std::chrono::high_resolution_clock::now();
             minDist = Menu::greedyHeuristica(graph, minPath);
-            //for (int i = 0; i < 100000; i++) {
-            //    minDist = Menu::randomSwap(graph, minPath, minDist);
-            //}
-            //Menu::twoOpt(graph, minPath, minDist);
             end = std::chrono::high_resolution_clock::now();
             time = end - start;
             ShowResults(option, minDist, minPath, time);
