@@ -126,6 +126,10 @@ void DisplayMenu::SelectGraphFully() {
             Data::loadGraph(graph, "edges_75.csv", false);
             Base();
             break;
+        case 12:
+            Data::loadGraph(graph, "edges_900.csv", false);
+            Base();
+            break;
     /** ----------------------- COMPLETAR ---------------------------- **/
         case 0:
             CloseMenu();
@@ -158,14 +162,17 @@ void DisplayMenu::SelectGraphReal() {
     switch (option){
         case 1:
             Data::loadGraph(graph, "edges1.csv", true);
+            Data::loadNodesInfo(graph, "nodes1.csv");
             Base();
             break;
         case 2:
             Data::loadGraph(graph, "edges2.csv", true);
+            Data::loadNodesInfo(graph, "nodes2.csv");
             Base();
             break;
         case 3:
             Data::loadGraph(graph, "edges3.csv", true);
+            Data::loadNodesInfo(graph, "nodes3.csv");
             Base();
             break;
         case 0:
@@ -227,10 +234,6 @@ void DisplayMenu::Base(){
         case 4:
             start = std::chrono::high_resolution_clock::now();
             minDist = Menu::greedyHeuristica(graph, minPath);
-            //for (int i = 0; i < 100000; i++) {
-            //    minDist = Menu::randomSwap(graph, minPath, minDist);
-            //}
-            //Menu::twoOpt(graph, minPath, minDist);
             end = std::chrono::high_resolution_clock::now();
             time = end - start;
             ShowResults(option, minDist, minPath, time);
