@@ -63,7 +63,7 @@ double Menu::greedyHeuristica(Graph<int> * g, vector<int>& minPath){
                     v2->addConnect(e);
                     count++;
                 }
-            if (count >= g->getNumVertex()) break;
+            if (count >= g->getNumVertex()) {break;}
 
         }
     auto v = g->findVertex(0);
@@ -101,21 +101,11 @@ double Menu::randomSwap(Graph<int>* g, vector<int>& minPath, double minDist) {
             int bef1 = minPath[pos1 - 1];
             int aft2 = minPath[pos2 + 1];
 
-            for (auto e: g->findVertex(n1)->getAdj()) {
-                auto v = e->getPair().second;
-                double w = e->getWeight();
+            minDistS -= g->findVertex(n1)->getWeightToHarvesine(g->findVertex(bef1));
+            minDistS += g->findVertex(n1)->getWeightToHarvesine(g->findVertex(aft2));
 
-                if (v->getInfo() == bef1)  {minDistS -= w;}
-                if (v->getInfo() == aft2)  {minDistS += w;}
-            }
-
-            for (auto e: g->findVertex(n2)->getAdj()) {
-                auto v = e->getPair().second;
-                double w = e->getWeight();
-
-                if (v->getInfo() == aft2)  {minDistS -= w;}
-                if (v->getInfo() == bef1)  {minDistS += w;}
-            }
+            minDistS -= g->findVertex(n2)->getWeightToHarvesine(g->findVertex(aft2));
+            minDistS += g->findVertex(n2)->getWeightToHarvesine(g->findVertex(bef1));
         }
 
     } else {
@@ -124,21 +114,16 @@ double Menu::randomSwap(Graph<int>* g, vector<int>& minPath, double minDist) {
         int aft1 = minPath[pos1 + 1];
         int aft2 = minPath[pos2 + 1];
 
-        for (auto e: g->findVertex(n1)->getAdj()) {
-            auto v = e->getPair().second;
-            double w = e->getWeight();
 
-            if (v->getInfo() == bef1 || v->getInfo() == aft1)  {minDistS -= w;}
-            if (v->getInfo() == bef2 || v->getInfo() == aft2)  {minDistS += w;}
-        }
+        minDistS -= g->findVertex(n1)->getWeightToHarvesine(g->findVertex(bef1));
+        minDistS -= g->findVertex(n1)->getWeightToHarvesine(g->findVertex(aft1));
+        minDistS += g->findVertex(n1)->getWeightToHarvesine(g->findVertex(bef2));
+        minDistS += g->findVertex(n1)->getWeightToHarvesine(g->findVertex(aft2));
 
-        for (auto e: g->findVertex(n2)->getAdj()) {
-            auto v = e->getPair().second;
-            double w = e->getWeight();
-
-            if (v->getInfo() == bef2 || v->getInfo() == aft2)  {minDistS -= w;}
-            if (v->getInfo() == bef1 || v->getInfo() == aft1)  {minDistS += w;}
-        }
+        minDistS -= g->findVertex(n2)->getWeightToHarvesine(g->findVertex(bef2));
+        minDistS -= g->findVertex(n2)->getWeightToHarvesine(g->findVertex(aft2));
+        minDistS += g->findVertex(n2)->getWeightToHarvesine(g->findVertex(bef1));
+        minDistS += g->findVertex(n2)->getWeightToHarvesine(g->findVertex(aft1));
     }
 
     if (minDistS < minDist) {
@@ -152,17 +137,13 @@ double Menu::randomSwap(Graph<int>* g, vector<int>& minPath, double minDist) {
 double distancePath(Graph<int>* g, vector<int>& path) {
     double distance = 0;
     int n = path.size();
+
     for (int i = 0; i < n - 1; i++) {
-        for (auto edge: g->findVertex(path[i])->getAdj()) {
-            if (edge->getPair().second->getInfo() == path[i+1])
-                distance += edge->getWeight();
-        }
+        distance += g->findVertex(path[i])->getWeightToHarvesine(g->findVertex(path[i+1]));
     }
 
-    for (auto edge: g->findVertex(path[n - 1])->getAdj()) {
-        if (edge->getPair().second->getInfo() == path[0])
-            distance += edge->getWeight();
-    }
+    // Aresta de volta ao inicial
+    distance += g->findVertex(path[n - 1])->getWeightToHarvesine(g->findVertex(path[0]));
 
     return distance;
 }
@@ -457,7 +438,7 @@ double Menu::triangularApproximation(Graph<int>* g, vector<int>& minPath){
 double Menu::simulatedAnnealing(Graph<int>* graph, vector<int>& minPath) {
     random_device rd; mt19937 generator(rd());
     uniform_real_distribution<double> distribution(0.0, 1.0);
-    double temperature = 1, coolRate = 0.3;
+    double temperature = 1, coolRate = 0.85;
 
     // 1 - Initial solution for path
     double minDist = greedyHeuristica(graph, minPath);
