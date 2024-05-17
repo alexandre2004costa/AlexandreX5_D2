@@ -126,6 +126,10 @@ void DisplayMenu::SelectGraphFully() {
             Data::loadGraph(graph, "edges_75.csv", false);
             Base();
             break;
+        case 12:
+            Data::loadGraph(graph, "edges_900.csv", false);
+            Base();
+            break;
     /** ----------------------- COMPLETAR ---------------------------- **/
         case 0:
             CloseMenu();
@@ -163,6 +167,7 @@ void DisplayMenu::SelectGraphReal() {
             break;
         case 2:
             Data::loadGraph(graph, "edges2.csv", true);
+            Data::loadNodesInfo(graph, "nodes2.csv");
             Base();
             break;
         case 3:
