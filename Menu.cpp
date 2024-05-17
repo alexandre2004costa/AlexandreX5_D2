@@ -8,14 +8,15 @@
 #include <cmath>
 #include <unordered_map>
 
-double pi=3.14159265358979323846;
+//double pi=3.14159265358979323846;
+double pi = M_PI;
 double earthradius=6371000; //meters
 /**
  * @brief Converts degrees to radians.
  * @param coord Value of the coordinate in degrees.
  * @return Value of the coordinate in radians.
  */
-double toRadians(double coord){
+double Menu::toRadians(double coord){
     return coord*pi/180.0;
 }
 
@@ -27,7 +28,7 @@ double toRadians(double coord){
  * @param lon2 Longitude of the second point in degrees.
  * @return The Haversine distance between the two points in meters.
  */
-double haversineDistance(double lat1, double lon1, double lat2, double lon2){
+double Menu::haversineDistance(double lat1, double lon1, double lat2, double lon2){
     double radLat1=toRadians(lat1);
     double radLon1=toRadians(lon1);
     double radLat2=toRadians(lat2);
@@ -36,7 +37,7 @@ double haversineDistance(double lat1, double lon1, double lat2, double lon2){
     double deltaLat=radLat2-radLat1;
     double deltaLon=radLon2-radLon1;
 
-    double a=sin(deltaLat/2)*sin(deltaLat/2)+cos(radLat1)*cos(radLat2)*sin(deltaLon/2)*sin(deltaLon/2);
+    double a=sin(deltaLat/2.0)*sin(deltaLat/2.0)+cos(radLat1)*cos(radLat2)*sin(deltaLon/2.0)*sin(deltaLon/2.0);
     double c=2.0*atan2(sqrt(a), sqrt(1.0-a));
 
     return earthradius*c;
@@ -222,7 +223,15 @@ void Menu::twoOpt(Graph<int>* g, vector<int>& minPath, double& minDist) {
 
 
 
-
+/**
+ * @brief Sees if there is a path between two vertices in the graph.
+ * This function sees if there is a path from a source to a destination vertex.
+ * @param graph Graph.
+ * @param infoOrig Source vertex info.
+ * @param infoDest Destination vertex info.
+ * @return It is true if there is a path between the source and destination vertices.
+ * @details Complexity-> O(n), n is the average number of edges in each vertex.
+ */
 bool existsPath(Graph<int>& graph, int infoOrig, int infoDest) {
     for (auto edge: graph.findVertex(infoOrig)->getAdj())
         if (edge->getVertex(graph.findVertex(infoOrig))->getInfo() == infoDest)
@@ -230,6 +239,15 @@ bool existsPath(Graph<int>& graph, int infoOrig, int infoDest) {
     return false;
 }
 
+/**
+ * @brief Shows the distance between two vertices.
+ * This function calculates the distance between two vertices in the graph.
+ * @param graph Graph.
+ * @param infoLast Source vertex info.
+ * @param infoNext Destination vertex info.
+ * @return The distance of the source to the destination vertices if exists a direct edge between them and 0 if it doesn't exist.
+ * @details Complexity-> O(n), n is the number of edges adjacent to the vertex with the information infoLast.
+ */
 double calculateDistance(Graph<int>& graph, int infoLast, int infoNext) {
     double distance = graph.findVertex(infoLast)->getDist();
 
@@ -420,10 +438,10 @@ void Tsp(vector<Edge<int>*> &path, double &cost, Graph<T> *g){
         if (actualV != lastV){
             //cout << "de " << lastV << " para " << actualV << endl;
             double v = g->findVertex(actualV)->getWeightTo(lastV);
-            if (v == -1)
-                cost += haversineDistance(g->findVertex(actualV)->getLatitude(), g->findVertex(actualV)->getLongitude(), g->findVertex(lastV)->getLatitude(), g->findVertex(lastV)->getLongitude());
-            else cost += v;
-            lastV = actualV;
+            //if (v == -1)
+               // cost += haversineDistance(g->findVertex(actualV)->getLatitude(), g->findVertex(actualV)->getLongitude(), g->findVertex(lastV)->getLatitude(), g->findVertex(lastV)->getLongitude());
+           // else cost += v;
+           // lastV = actualV;
         }
         v1->setVisited(true);
         v2->setVisited(true);
@@ -432,7 +450,7 @@ void Tsp(vector<Edge<int>*> &path, double &cost, Graph<T> *g){
     //cout << "de " << actualV << " para " << 0 << endl;
     double v = g->findVertex(0)->getWeightTo(actualV);
     if (v == -1) {
-        cost += haversineDistance(g->findVertex(0)->getLatitude(), g->findVertex(0)->getLongitude(), g->findVertex(actualV)->getLatitude(), g->findVertex(actualV)->getLongitude());
+       // cost += haversineDistance(g->findVertex(0)->getLatitude(), g->findVertex(0)->getLongitude(), g->findVertex(actualV)->getLatitude(), g->findVertex(actualV)->getLongitude());
     }else cost += v;
 
 }
@@ -500,10 +518,32 @@ double Menu::Cristofides(Graph<int> * g, vector<int>& minPath){
     return {0,0};
 }
 
+void Menu::harvesineEdges(Graph<int> * g){
+    if (g->getVertexSet().empty()) {
+        return;
+    }
+    for(auto v: g->getVertexSet()){
+            for(auto v2: g->getVertexSet()){
+                bool existEdge = false;
+                for(auto e: v->getAdj()){
+                    if(e->getPair().second->getInfo() == v2->getInfo()) {
+                        existEdge = true;
+                    }
+                }
+
+                if((existEdge==false)&&(v->getInfo()!=v2->getInfo())){
+                    cout << v->getInfo() << v2->getInfo() << endl;
+                    cout<<haversineDistance(v->getLatitude(), v->getLongitude(), v2->getLatitude(), v2->getLongitude())<<endl;
+                    g->addEdge(v->getInfo(), v2->getInfo(), haversineDistance(v->getLatitude(), v->getLongitude(), v2->getLatitude(), v2->getLongitude()));
+                }
+            }
+    }
+}
 
 vector<Vertex<int>*> Menu::prim(Graph<int> * g){
+    vector<Vertex<int> *> vetor={};
     if (g->getVertexSet().empty()) {
-        return g->getVertexSet();
+        return vetor;
     }
 
     for(auto v : g->getVertexSet()) {
@@ -522,10 +562,9 @@ vector<Vertex<int>*> Menu::prim(Graph<int> * g){
 
         auto v = q.extractMin();
         v->setVisited(true);
-
+        vetor.push_back(v);
         for(auto &e : v->getAdj()) {
             Vertex<int>* w = e->getVertex(v);
-
             if (!w->isVisited()) {
                 auto oldDist = w->getDist();
 
@@ -544,22 +583,25 @@ vector<Vertex<int>*> Menu::prim(Graph<int> * g){
             }
         }
     }
-    return g->getVertexSet();
+    return vetor;
 }
 
 double Menu::triangularApproximation(Graph<int>* g, vector<int>& minPath){
+    harvesineEdges(g);
     double r=0;
-    vector p=prim(g);
-    for(auto i=0; i<p.size(); i++){
-        r+=p[i]->getDist();
-        //cout<<p[i]->getDist()<<endl;
-        minPath.push_back(p[i]->getInfo());
+    vector vetor=prim(g);
+
+    for(auto i=0; i<vetor.size(); i++){
+        minPath.push_back(vetor[i]->getInfo());
+        r+=vetor[i]->getDist();
+        //cout<<vetor[i]->getDist()<<endl;
     }
 
-    Vertex<int> * ultimo=p[p.size()-1];
+    Vertex<int> * ultimo=vetor[vetor.size()-1];
 
-    r+=ultimo->getWeightTo(p[p.size()-2]->getInfo());
-    //cout<<ultimo->getWeightTo(p[p.size()-2]->getInfo())<<endl;
+
+    r+=vetor[0]->getWeightTo(ultimo->getInfo());
+
 
     return r;
 }

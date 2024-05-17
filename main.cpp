@@ -4,12 +4,12 @@
 #include <chrono>
 #include <set>
 
+
 int main() {
+    DisplayMenu displayMenu = DisplayMenu();
+    displayMenu.SelectGraphType();
 
-    /*DisplayMenu displayMenu = DisplayMenu();
-    displayMenu.OpenMenu();*/
-
-    Graph<int>* graph = new Graph<int>();
+/* Graph<int>* graph = new Graph<int>();
     vector<int> min;
     Data::loadGraph(graph, "edges.csv", true);
     //Data::loadNodesInfo(graph, "nodes2.csv");
@@ -25,3 +25,4 @@ int main() {
     cout << duration1.count();
     return 0;
 }
+

@@ -2,14 +2,13 @@
 #include "Data.h"
 
 /**
- * @brief Adds a source vertex connected to all of the reservoirs and connects the cities to a target vertex.
- * This function adds a source and a target vertex to the graph and iterates over the vertices that are in the
- * @param g Pointer to the graph.
- * @return None
- * @details Complexity O(V), V: number of vertices.
+ * @brief Loads a graph from a file.
+ * This function reads data from the file and puts the vertices and edges in the given graph.
+ * @param graph Pointer to the graph.
+ * @param fileName Name of the file.
+ * @param first_line If true ignore the first line.
+ * @details
  */
-
-
 void Data::loadGraph(Graph<int> *graph, string fileName, bool first_line) {
     ifstream in(fileName);
     vector<string> temp;
