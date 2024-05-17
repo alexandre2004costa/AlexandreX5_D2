@@ -9,7 +9,7 @@ class Menu {
 
 public:
     static double Cristofides(Graph<int> * g, vector<int>& minPath);
-    static double greedyHeuristica(Graph<int> * g, set<int>& minPath);
+    static double greedyHeuristica(Graph<int> * g, vector<int>& minPath);
     static double randomSwap(Graph<int> * g, vector<int>& minPath, double minDistance);
     static void twoOpt(Graph<int>* g, vector<int>& path, double& dist);
     static double Backtracking(Graph<int>& graph, vector<int>& minPath);

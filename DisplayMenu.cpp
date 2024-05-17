@@ -186,6 +186,7 @@ void DisplayMenu::SelectGraphConnect(string nodeFile) {
 
 
 void DisplayMenu::Base(){
+    cout << graph->getNumVertex() << endl;
     cout << "-----------------------------| Menu |-----------------------------" << endl;
     cout << " 1-> Select the graph" << endl;
     cout << " 2-> Backtracking Algorithm" << endl;
