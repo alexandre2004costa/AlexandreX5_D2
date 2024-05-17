@@ -518,6 +518,18 @@ double Menu::Cristofides(Graph<int> * g, vector<int>& minPath){
     return {0,0};
 }
 
+void Menu::harvesineEdges(Graph<int> * g){
+    if (g->getVertexSet().empty()) {
+        return;
+    }
+    for(auto v: g->getVertexSet()){
+            for(auto v2: g->getVertexSet()){
+                bool existEdge = false;
+                for(auto e: v->getAdj()){
+                    if(e->getPair().second->getInfo() == v2->getInfo()) {
+                        existEdge = true;
+                    }
+                }
 
 /*vector<Vertex<int> *> vetor={};
 bool Menu::existsInVector(int info) {
@@ -541,7 +553,7 @@ void Menu::harvesineEdges(Graph<int> * g){
                         existEdge = true;
                     }
                 }
-
+                
                 if((existEdge==false)&&(v->getInfo()!=v2->getInfo())){
                     cout << v->getInfo() << v2->getInfo() << endl;
                     cout<<haversineDistance(v->getLatitude(), v->getLongitude(), v2->getLatitude(), v2->getLongitude())<<endl;
