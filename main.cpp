@@ -7,21 +7,35 @@ int main() {
     DisplayMenu displayMenu = DisplayMenu();
     displayMenu.SelectGraphType();
 
-/* Graph<int>* graph = new Graph<int>();
-    vector<int> min;
-    Data::loadGraph(graph, "edges.csv", true);
-    //Data::loadNodesInfo(graph, "nodes2.csv");
-    cout << "lido " << endl;
-    auto start = std::chrono::high_resolution_clock::now();
-    //cout << Menu::greedyHeuristica(graph, min) << ","<< min.size() << endl;
-    for (int i = 0; i <= 15 ; i++){
-        auto r1 =  Menu::nearestNeighborTSP(graph, min, i);
-        cout << i <<" : "<< r1.second << " , " << r1.first << endl;
-    }
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration1 = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    cout << duration1.count();
-    return 0;*/
+    /*
+    double minDist; vector<int> minPath;
+    chrono::time_point<chrono::high_resolution_clock> start;
+    chrono::time_point<chrono::high_resolution_clock> end;
+    std::chrono::duration<double> time;
+
+
+    Graph<int>* graph = new Graph<int>();
+    Data::loadGraph(graph, "edges_200.csv", false);
+    Data::loadNodesInfo(graph, "nodes.csv");
+    start = std::chrono::high_resolution_clock::now();
+    // ALTERAR AQUI
+    minDist = Menu::greedyHeuristica(graph, minPath);
+    for (int i = 0; i < 50000; i++) minDist = Menu::randomSwap(graph, minPath, minDist);
+    //Menu::twoOpt(graph, minPath, minDist);
+    //minDist = Menu::simulatedAnnealing(graph, minPath);
+    end = std::chrono::high_resolution_clock::now();
+    time = end - start;
+
+    cout << " Distance: " << minDist << std::endl;
+
+    cout << " Path: ";
+    for (int i: minPath)
+        cout << i << " -> ";
+    cout << "0" << endl;
+
+    cout << " Duration: " << time.count() << " seconds" << endl << endl << endl;
+     */
+
     return 0;
 }
 

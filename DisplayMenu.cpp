@@ -49,7 +49,7 @@ void DisplayMenu::SelectGraphToy(){
     cout << " 1-> shipping" << endl;
     cout << " 2-> stadiums" << endl;
     cout << " 3-> tourism" << endl;
-    cout << " 0-> Close menu" << endl;
+    cout << " 0-> Go back" << endl;
 
     cout << endl;
     std::cout << " Option: ";
@@ -76,7 +76,7 @@ void DisplayMenu::SelectGraphToy(){
             Base();
             break;
         case 0:
-            CloseMenu();
+            SelectGraphType();
             break;
         default:
             break;
@@ -99,7 +99,7 @@ void DisplayMenu::SelectGraphFully() {
     cout << " 10-> edges_700" << endl;
     cout << " 11-> edges_800" << endl;
     cout << " 12-> edges_900" << endl;
-    cout << " 0-> Close menu" << endl;
+    cout << " 0-> Go back" << endl;
 
     cout << endl;
     std::cout << " Option: ";
@@ -116,23 +116,54 @@ void DisplayMenu::SelectGraphFully() {
     switch (option){
         case 1:
             Data::loadGraph(graph, "edges_25.csv", false);
-            Base();
+            SelectGraphConnect("nodes.csv");
             break;
         case 2:
             Data::loadGraph(graph, "edges_50.csv", false);
-            Base();
+            SelectGraphConnect("nodes.csv");
             break;
         case 3:
             Data::loadGraph(graph, "edges_75.csv", false);
-            Base();
+            SelectGraphConnect("nodes.csv");
+            break;
+        case 4:
+            Data::loadGraph(graph, "edges_100.csv", false);
+            SelectGraphConnect("nodes.csv");
+            break;
+        case 5:
+            Data::loadGraph(graph, "edges_200.csv", false);
+            SelectGraphConnect("nodes.csv");
+            break;
+        case 6:
+            Data::loadGraph(graph, "edges_300.csv", false);
+            SelectGraphConnect("nodes.csv");
+            break;
+        case 7:
+            Data::loadGraph(graph, "edges_400.csv", false);
+            SelectGraphConnect("nodes.csv");
+            break;
+        case 8:
+            Data::loadGraph(graph, "edges_500.csv", false);
+            SelectGraphConnect("nodes.csv");
+            break;
+        case 9:
+            Data::loadGraph(graph, "edges_600.csv", false);
+            SelectGraphConnect("nodes.csv");
+            break;
+        case 10:
+            Data::loadGraph(graph, "edges_700.csv", false);
+            SelectGraphConnect("nodes.csv");
+            break;
+        case 11:
+            Data::loadGraph(graph, "edges_800.csv", false);
+            SelectGraphConnect("nodes.csv");
             break;
         case 12:
             Data::loadGraph(graph, "edges_900.csv", false);
             Base();
             break;
-    /** ----------------------- COMPLETAR ---------------------------- **/
         case 0:
-            CloseMenu();
+            SelectGraphType();
             break;
         default:
             break;
@@ -146,7 +177,7 @@ void DisplayMenu::SelectGraphReal() {
     cout << " 1-> graph 1" << endl;
     cout << " 2-> graph 2" << endl;
     cout << " 3-> graph 3" << endl;
-    cout << " 0-> Close menu" << endl;
+    cout << " 0-> Go back" << endl;
 
     cout << endl;
     std::cout << " Option: ";
@@ -162,21 +193,18 @@ void DisplayMenu::SelectGraphReal() {
     switch (option){
         case 1:
             Data::loadGraph(graph, "edges1.csv", true);
-            Data::loadNodesInfo(graph, "nodes1.csv");
-            Base();
+            SelectGraphConnect("nodes1.csv");
             break;
         case 2:
             Data::loadGraph(graph, "edges2.csv", true);
-            Data::loadNodesInfo(graph, "nodes2.csv");
-            Base();
+            SelectGraphConnect("nodes2.csv");
             break;
         case 3:
             Data::loadGraph(graph, "edges3.csv", true);
-            Data::loadNodesInfo(graph, "nodes3.csv");
-            Base();
+            SelectGraphConnect("nodes3.csv");
             break;
         case 0:
-            CloseMenu();
+            SelectGraphType();
             break;
         default:
             break;
@@ -185,7 +213,36 @@ void DisplayMenu::SelectGraphReal() {
 
 
 void DisplayMenu::SelectGraphConnect(string nodeFile) {
+    cout << "-----------------------------| Menu |-----------------------------" << endl;
+    cout << " Do you want to fully connect it? " << endl;
+    cout << " 1-> Yes" << endl;
+    cout << " 2-> No" << endl;
+    cout << " 0-> Go back" << endl;
 
+    cout << endl;
+    std::cout << " Option: ";
+    string k; cin >> k;
+    while (!(k == "1" || k == "2" || k == "0")) {
+        cout << "Invalid input. Option: ";
+        cin >> k;
+    }
+    cout << endl << endl;
+
+    int option = stoi(k);
+    switch (option){
+        case 1:
+            Data::loadNodesInfo(graph, nodeFile);
+            Base();
+            break;
+        case 2:
+            Base();
+            break;
+        case 0:
+            SelectGraphType();
+            break;
+        default:
+            break;
+    }
 }
 
 

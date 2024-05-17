@@ -11,6 +11,7 @@
 #include <limits>
 #include <algorithm>
 #include <cmath>
+#include <unordered_map>
 #include "MutablePriorityQueue.h"
 #include "Harvesine.h"
 using namespace std;
