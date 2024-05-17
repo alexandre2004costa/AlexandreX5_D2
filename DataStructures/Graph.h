@@ -10,13 +10,16 @@
 #include <queue>
 #include <limits>
 #include <algorithm>
+#include <cmath>
 #include "MutablePriorityQueue.h"
+#include "Harvesine.h"
 using namespace std;
 
 template <class T>
 class Edge;
 
 #define INF std::numeric_limits<double>::max()
+
 
 /************************* Vertex  **************************/
 
@@ -41,6 +44,7 @@ public:
     void setPath(Edge<int>* p);
     bool removeEdgeFromConnect(T in);
     double getWeightTo(T info);
+    double getWeightToHarvesine(Vertex<T> *v);
 
     //New
     std::vector<Edge<T> *> getConnects() const;
@@ -276,6 +280,13 @@ double Vertex<T>::getWeightTo(T info){
         if (e->getVertex(this)->getInfo() == info) return e->getWeight();
     }
     return -1;
+}
+template <class T>
+double Vertex<T>::getWeightToHarvesine(Vertex<T> *v){
+    for (auto e : this->adj){
+        if (e->getVertex(this) == v) return e->getWeight();
+    }
+    return Harvesine::haversineDistance(this->latitude, this->longitude, v->getLatitude(), v->getLongitude());
 }
 
 /********************** Edge  ****************************/
@@ -655,5 +666,6 @@ Graph<T>::~Graph() {
     deleteMatrix(distMatrix, vertexSet.size());
     deleteMatrix(pathMatrix, vertexSet.size());
 }
+
 
 #endif /* DA_TP_CLASSES_GRAPH */

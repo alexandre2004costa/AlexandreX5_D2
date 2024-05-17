@@ -1,47 +1,7 @@
 
-#include <vector>
-#include "DataStructures/Graph.h"
+
 #include "Menu.h"
-#include <random>
-#include <stack>
-#include <set>
-#include <cmath>
-#include <unordered_map>
 
-//double pi=3.14159265358979323846;
-double pi = M_PI;
-double earthradius=6371000; //meters
-/**
- * @brief Converts degrees to radians.
- * @param coord Value of the coordinate in degrees.
- * @return Value of the coordinate in radians.
- */
-double Menu::toRadians(double coord){
-    return coord*pi/180.0;
-}
-
-/**
- * @brief Gives the Haversine distance between two coordinates.
- * @param lat1 Latitude of the first point in degrees.
- * @param lon1 Longitude of the first point in degrees.
- * @param lat2 Latitude of the second point in degrees.
- * @param lon2 Longitude of the second point in degrees.
- * @return The Haversine distance between the two points in meters.
- */
-double Menu::haversineDistance(double lat1, double lon1, double lat2, double lon2){
-    double radLat1=toRadians(lat1);
-    double radLon1=toRadians(lon1);
-    double radLat2=toRadians(lat2);
-    double radLon2=toRadians(lon2);
-
-    double deltaLat=radLat2-radLat1;
-    double deltaLon=radLon2-radLon1;
-
-    double a=sin(deltaLat/2.0)*sin(deltaLat/2.0)+cos(radLat1)*cos(radLat2)*sin(deltaLon/2.0)*sin(deltaLon/2.0);
-    double c=2.0*atan2(sqrt(a), sqrt(1.0-a));
-
-    return earthradius*c;
-}
 
 
 /**
@@ -84,8 +44,10 @@ double Menu::greedyHeuristica(Graph<int> * g, vector<int>& minPath){
             if (v->getInfo() < e->getVertex(v)->getInfo()) allEdges.push_back(e);
         }
     }
+    int count = 0;
     sort(allEdges.begin(), allEdges.end(), [](Edge<int> *a, Edge<int> *b) { return a->getWeight() < b->getWeight(); });
     double totalWeight = 0;
+
         for (auto e : allEdges) {
             auto v1 = e->getPair().first;
             auto v2 = e->getPair().second;
@@ -99,7 +61,9 @@ double Menu::greedyHeuristica(Graph<int> * g, vector<int>& minPath){
                     totalWeight += e->getWeight();
                     v1->addConnect(e);
                     v2->addConnect(e);
+                    count ++;
                 }
+            if (count >= g->getNumVertex()) break;
 
         }
     auto v = g->findVertex(0);
@@ -312,107 +276,7 @@ double Menu::Backtracking(Graph<int>& graph, vector<int>& minPath) {
     return minDistance;
 }
 /*
-template <class T>
-void prim(Graph<T> * g) {
-    for(auto v : g->getVertexSet()) {
-        v->setDist(INF);
-        v->setPath(nullptr);
-        v->setVisited(false);
-    }
-    Vertex<T>* s = g->getVertexSet().front();
-    s->setDist(0);
-    MutablePriorityQueue<Vertex<T>> q;
-    q.insert(s);
-    while( ! q.empty() ) {
-        auto v = q.extractMin();
-        v->setVisited(true);
-        for(auto &e : v->getAdj()) {
-            Vertex<T>* w = e->getVertex(v);
-            if (!w->isVisited()) {
-                auto oldDist = w->getDist();
-                if(e->getWeight() < oldDist) {
-                    w->setDist(e->getWeight());
-                    w->setPath(e);
-                    if (oldDist == INF) {
-                        q.insert(w);
-                    }
-                    else {
-                        q.decreaseKey(w);
-                    }
-                }
-            }
-        }
-    }
-}
 
-template <class T>
-void BestMatch(Graph<T> *g) {
-    Vertex<int> * closest;
-    int length;
-    vector<Vertex<int> *>::iterator tmp, first;
-    vector<Vertex<int> *> oddVertex;
-    for (auto v : g->getVertexSet()) v->setDist(0);
-    for (auto v : g->getVertexSet()){
-        if (v->getPath() == nullptr) continue;
-        v->setDist(v->getDist() + 1);
-        v->getPath()->getVertex(v)->setDist(v->getPath()->getVertex(v)->getDist() + 1);
-    }
-    for (auto v : g->getVertexSet()){
-        if (static_cast<int>(v->getDist()) % 2 != 0) oddVertex.push_back(v);
-        if (v->getPath() == nullptr ) continue;
-        for (auto e : v->getAdj()){
-            if (e == v->getPath() || (e->getPair().first == v->getPath()->getPair().second) && (e->getPair().second == v->getPath()->getPair().first)){
-                v->addConnect(e);
-                e->getVertex(v)->addConnect(e);
-            }
-        }
-        v->setDist(0);
-    }
-    while (!oddVertex.empty()) {
-        first = oddVertex.begin();
-        vector<Vertex<int> *>::iterator it = oddVertex.begin() + 1;
-        vector<Vertex<int> *>::iterator end = oddVertex.end();
-        length = std::numeric_limits<int>::max();
-        for (; it != end; ++it) {
-            for (auto e : (*it)->getAdj()) if (e->getVertex(*it) == *first){
-                if (e->getWeight() < length) {
-                    length =e->getWeight();
-                    closest = *it;
-                    tmp = it;
-                }
-            }
-
-        }
-        Edge<T> *e = new Edge(*first, closest, length);
-        (*first)->addConnect(e);
-        closest->addConnect(e);
-        oddVertex.erase(tmp);
-        oddVertex.erase(first);
-    }
-    for (auto v : g->getVertexSet()){
-        //cout <<" !! "<<v->getInfo() << endl;
-        for (auto e : v->getConnects()){
-            //cout << e->getVertex(v)->getInfo() << endl;
-        }
-    }
-}
-
-template <class T>
-void dfs(Vertex<T>* v, vector<Edge<T>*>& eulerianCircuit) {
-    while (!v->getConnects().empty()) {
-        Edge<T>* e = v->getConnects().front();
-        Vertex<T>* u = e->getVertex(v);
-        v->removeEdgeFromConnect(u->getInfo());
-        u->removeEdgeFromConnect(v->getInfo());
-        eulerianCircuit.push_back(e);
-        dfs(u, eulerianCircuit);
-    }
-}
-
-template <class T>
-void findEulerianCircuit(Vertex<T> *v, vector<Edge<T>*>& eulerianCircuit) {
-    dfs(v, eulerianCircuit);
-}
 template <class T>
 void Tsp(vector<Edge<int>*> &path, double &cost, Graph<T> *g){
     cost = 0;
@@ -460,18 +324,7 @@ void Tsp(vector<Edge<int>*> &path, double &cost, Graph<T> *g){
     }else cost += v;
 
 }
-
-double Menu::Cristofides(Graph<int> * g, vector<int>& minPath){
-    prim(g);
-    BestMatch(g);
-    vector<Edge<int>*> eulerian;
-    findEulerianCircuit(g->findVertex(0), eulerian);
-    //for (auto e : eulerian)  cout << e->getPair().first->getInfo() << " : " << e->getPair().second->getInfo() << endl;
-    for (auto v : g->getVertexSet()) v->setVisited(false);
-    double cost;
-    Tsp(eulerian, cost, g);
-    return cost;
-}*/
+*/
 
  pair<double,int> Menu::nearestNeighborTSP(Graph<int> *graph, vector<int>& minPath, int inicialVertex){
     stack<Vertex<int>*> s;
@@ -527,67 +380,33 @@ double Menu::Cristofides(Graph<int> * g, vector<int>& minPath){
     return {0,0};
 }
 
-void Menu::harvesineEdges(Graph<int> * g){
-    if (g->getVertexSet().empty()) {
-        return;
-    }
-    for(auto pair1: g->getVertexSet()){
-        auto v = pair1.second;
-            for(auto pair2: g->getVertexSet()){
-                auto v2 = pair2.second;
-                bool existEdge = false;
-                for(auto e: v->getAdj()){
-                    if(e->getPair().second->getInfo() == v2->getInfo()) {
-                        existEdge = true;
-                    }
-                }
-
-                if((existEdge==false)&&(v->getInfo()!=v2->getInfo())){
-                    cout << v->getInfo() << v2->getInfo() << endl;
-                    cout<<haversineDistance(v->getLatitude(), v->getLongitude(), v2->getLatitude(), v2->getLongitude())<<endl;
-                    g->addEdge(v->getInfo(), v2->getInfo(), haversineDistance(v->getLatitude(), v->getLongitude(), v2->getLatitude(), v2->getLongitude()));
-                }
-            }
-    }
-}
-
-vector<Vertex<int>*> Menu::prim(Graph<int> * g){
-    vector<Vertex<int> *> vetor={};
-    if (g->getVertexSet().empty()) {
-        return vetor;
-    }
-
+template <class T>
+void prim(Graph<T> * g) {
+     stack<Edge<T> *> que;
     for(auto pair : g->getVertexSet()) {
         auto v = pair.second;
         v->setDist(INF);
         v->setPath(nullptr);
         v->setVisited(false);
     }
-
-    Vertex<int>* s = g->findVertex(0);
+    Vertex<T>* s =g->findVertex(0);
     s->setDist(0);
-
-    MutablePriorityQueue<Vertex<int>> q;
+    MutablePriorityQueue<Vertex<T>> q;
     q.insert(s);
-
-    while(!q.empty()) {
-
+    while( ! q.empty() ) {
         auto v = q.extractMin();
         v->setVisited(true);
-        vetor.push_back(v);
         for(auto &e : v->getAdj()) {
-            Vertex<int>* w = e->getVertex(v);
+            Vertex<T>* w = e->getVertex(v);
             if (!w->isVisited()) {
                 auto oldDist = w->getDist();
-
                 if(e->getWeight() < oldDist) {
                     w->setDist(e->getWeight());
                     w->setPath(e);
-
+                    que.push(e);
                     if (oldDist == INF) {
                         q.insert(w);
                     }
-
                     else {
                         q.decreaseKey(w);
                     }
@@ -595,26 +414,42 @@ vector<Vertex<int>*> Menu::prim(Graph<int> * g){
             }
         }
     }
-    return vetor;
+    while (!que.empty()){
+        auto e = que.top();
+        que.pop();
+        if (e->getPair().first->getPath() != e && e->getPair().second->getPath() != e) continue;
+
+        e->getPair().first->addConnect(e);
+        e->getPair().second->addConnect(e);
+    }
+}
+
+template <class T>
+void dfs(Vertex<T>* v, vector<int>& eulerianCircuit) {
+    v->setVisited(true);
+    eulerianCircuit.push_back(v->getInfo());
+    for (Edge<T>* e : v->getConnects()) {
+        Vertex<T>* u = e->getVertex(v);
+        if (!u->isVisited()) {
+            dfs(u, eulerianCircuit);
+        }
+    }
 }
 
 double Menu::triangularApproximation(Graph<int>* g, vector<int>& minPath){
-    harvesineEdges(g);
     double r=0;
-    vector vetor=prim(g);
-
-    for(auto i=0; i<vetor.size(); i++){
-        minPath.push_back(vetor[i]->getInfo());
-        r+=vetor[i]->getDist();
-        //cout<<vetor[i]->getDist()<<endl;
+    prim(g);
+    for (auto p : g->getVertexSet()) p.second->setVisited(false);
+    dfs(g->findVertex(0), minPath);
+    int lastV = -1;
+    for (auto k : minPath){
+        if (lastV != -1){
+            r += g->findVertex(lastV)->getWeightToHarvesine(g->findVertex(k));
+            cout << lastV << "," << k << " : " << g->findVertex(lastV)->getWeightTo(k) << endl;
+        }
+        lastV = k;
     }
-
-    Vertex<int> * ultimo=vetor[vetor.size()-1];
-
-
-    r+=vetor[0]->getWeightTo(ultimo->getInfo());
-
-
+    r += g->findVertex(lastV)->getWeightToHarvesine(g->findVertex(minPath[0]));
     return r;
 }
 

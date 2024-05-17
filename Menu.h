@@ -2,8 +2,11 @@
 #ifndef PROJETO2_MENU_H
 #define PROJETO2_MENU_H
 
-#include <set>
+#include <vector>
 #include "DataStructures/Graph.h"
+#include <random>
+#include <stack>
+#include <cmath>
 
 class Menu {
 
@@ -14,11 +17,7 @@ public:
     static void twoOpt(Graph<int>* g, vector<int>& path, double& dist);
     static double Backtracking(Graph<int>& graph, vector<int>& minPath);
     static pair<double,int> nearestNeighborTSP(Graph<int> *graph, vector<int>& minPath, int inicialVertex);
-    static double haversineDistance(double lat1, double lon1, double lat2, double lon2);
-    static double toRadians(double coord);
-    static vector<Vertex<int>*> prim(Graph<int> * g);
     static double triangularApproximation(Graph<int>* graph, vector<int>& minPath);
-    static void harvesineEdges(Graph<int> * g);
 
 };
 
