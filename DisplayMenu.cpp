@@ -160,7 +160,7 @@ void DisplayMenu::SelectGraphFully() {
             break;
         case 12:
             Data::loadGraph(graph, "edges_900.csv", false);
-            Base();
+            SelectGraphConnect("nodes.csv");
             break;
         case 0:
             SelectGraphType();
@@ -248,7 +248,6 @@ void DisplayMenu::SelectGraphConnect(string nodeFile) {
 
 
 void DisplayMenu::Base(){
-    cout << graph->getNumVertex() << endl;
     cout << "-----------------------------| Menu |-----------------------------" << endl;
     cout << " 1-> Select the graph" << endl;
     cout << " 2-> Backtracking Algorithm" << endl;
@@ -270,6 +269,7 @@ void DisplayMenu::Base(){
     double minDist; vector<int> minPath;
     chrono::time_point<chrono::high_resolution_clock> start;
     chrono::time_point<chrono::high_resolution_clock> end;
+    pair<double, int> pair;
     std::chrono::duration<double> time;
     switch (option){
         case 1:
@@ -291,15 +291,17 @@ void DisplayMenu::Base(){
             break;
         case 4:
             start = std::chrono::high_resolution_clock::now();
-            minDist = Menu::greedyHeuristica(graph, minPath);
+            minDist = Menu::simulatedAnnealing(graph, minPath);
             end = std::chrono::high_resolution_clock::now();
             time = end - start;
             ShowResults(option, minDist, minPath, time);
             break;
         case 5:
             start = std::chrono::high_resolution_clock::now();
-            //minDist = Menu::Cristofides(graph, minPath);
+            pair = Menu::nearestNeighborTSP(graph, minPath, 0);
+            minDist = pair.first;
             end = std::chrono::high_resolution_clock::now();
+            time = end - start;
             ShowResults(option, minDist, minPath, time);
             askContinue();
             break;
@@ -330,13 +332,13 @@ void DisplayMenu::ShowResults(int option, double minDist, vector<int> minPath, c
             break;
     }
 
-    cout << " Distance: " << minDist << std::endl;
+
 
     cout << " Path: ";
     for (int i: minPath)
         cout << i << " -> ";
     cout << "0" << endl;
-
+    cout << " Distance: " << minDist << std::endl;
     cout << " Duration: " << time.count() << " seconds" << endl << endl << endl;
     askContinue();
 }

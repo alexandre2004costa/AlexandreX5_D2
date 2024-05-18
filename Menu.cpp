@@ -95,9 +95,13 @@ double Menu::randomSwap(Graph<int>* g, vector<int>& minPath, double minDist) {
     if (abs(pos1-pos2) == 1) {
         if (pos2 < pos1) {
             //Trocar a ordem para crescente
-            int temp = pos1; pos1 = pos2; pos2 = temp;
-            temp = n1; n1 = n2; n2 = temp;
-
+            int temp = pos1;
+            pos1 = pos2;
+            pos2 = temp;
+            temp = n1;
+            n1 = n2;
+            n2 = temp;
+        }
             int bef1 = minPath[pos1 - 1];
             int aft2 = minPath[pos2 + 1];
 
@@ -106,14 +110,12 @@ double Menu::randomSwap(Graph<int>* g, vector<int>& minPath, double minDist) {
 
             minDistS -= g->findVertex(n2)->getWeightToHarvesine(g->findVertex(aft2));
             minDistS += g->findVertex(n2)->getWeightToHarvesine(g->findVertex(bef1));
-        }
 
     } else {
         int bef1 = minPath[pos1 - 1];
         int bef2 = minPath[pos2 - 1];
         int aft1 = minPath[pos1 + 1];
         int aft2 = minPath[pos2 + 1];
-
 
         minDistS -= g->findVertex(n1)->getWeightToHarvesine(g->findVertex(bef1));
         minDistS -= g->findVertex(n1)->getWeightToHarvesine(g->findVertex(aft1));
@@ -125,12 +127,8 @@ double Menu::randomSwap(Graph<int>* g, vector<int>& minPath, double minDist) {
         minDistS += g->findVertex(n2)->getWeightToHarvesine(g->findVertex(bef1));
         minDistS += g->findVertex(n2)->getWeightToHarvesine(g->findVertex(aft1));
     }
-
-    if (minDistS < minDist) {
-        minPath[pos1] = n2; minPath[pos2] = n1;
-        return minDistS;
-    }
-    return minDist;
+    minPath[pos1] = n2; minPath[pos2] = n1;
+    return minDistS;
 }
 
 
@@ -426,7 +424,6 @@ double Menu::triangularApproximation(Graph<int>* g, vector<int>& minPath){
     for (auto k : minPath){
         if (lastV != -1){
             r += g->findVertex(lastV)->getWeightToHarvesine(g->findVertex(k));
-            cout << lastV << "," << k << " : " << g->findVertex(lastV)->getWeightTo(k) << endl;
         }
         lastV = k;
     }
@@ -436,26 +433,33 @@ double Menu::triangularApproximation(Graph<int>* g, vector<int>& minPath){
 
 
 double Menu::simulatedAnnealing(Graph<int>* graph, vector<int>& minPath) {
-    random_device rd; mt19937 generator(rd());
+    random_device rd;
+    mt19937 generator(rd());
     uniform_real_distribution<double> distribution(0.0, 1.0);
-    double temperature = 1, coolRate = 0.85;
+
+    double temperature = 100;
+    double coolRate = 0.999; // Taxa de resfriamento mais conservadora
 
     // 1 - Initial solution for path
     double minDist = greedyHeuristica(graph, minPath);
+    cout << minDist << endl;
 
     // 2 - Loop for temperature
     while (temperature > 0.1) {
-        // 3 - New solution for path : 2-opt
-        vector<int> newPath = minPath; double newDist = minDist;
-        twoOpt(graph, newPath, newDist);
+        // 3 - New solution for path: 2-opt
+        vector<int> newPath = minPath;
+        double newDist = minDist;
+        newDist = randomSwap(graph, newPath, newDist);
 
         // 4 - Check probability
-        double deltaDist = minDist - newDist;
-        bool prob = exp(deltaDist / temperature) > distribution(generator);
+        double deltaDist = abs(newDist - minDist);
+        bool prob = exp(-deltaDist / temperature) > distribution(generator);
+
         if ((newDist < minDist) || prob) {
             minPath = newPath;
             minDist = newDist;
         }
+
 
         // 5 - Update temperature
         temperature *= coolRate;
