@@ -35,6 +35,14 @@ bool isCycle(Vertex<T> *s, Vertex<T> *t, int size){
     return false;
 }
 
+/**
+ * @brief Applies a greedy heuristic algorithm to find an approximate solution.
+ * This function uses a greedy algorithm to approximate a solution for the TSP. It sorts all edges by weight and adds
+ * the smallest edge to the solution set, making sure there are no cycles and that the resulting path is valid.
+ * @param g Pointer to the graph.
+ * @param minPath Vector to store the resulting path of vertices.
+ * @return The total weight of the edges in the solution.
+ */
 double Menu::greedyHeuristica(Graph<int> * g, vector<int>& minPath){
     std::vector<Edge<int> *> allEdges;
     for (auto pair: g->getVertexSet()) {
@@ -82,6 +90,15 @@ double Menu::greedyHeuristica(Graph<int> * g, vector<int>& minPath){
 }
 
 
+/**
+ * @brief Performs a random swap of two nodes in the path to possibly find a shorter path.
+ * This function tries to improve the path length by randomly swapping two nodes of the "minPath".
+ * It calculates the new total distance after the swap and updates the path if the new distance is shorter.
+ * @param g Pointer to the graph.
+ * @param minPath Reference to the vector with the minimum path.
+ * @param minDist The minimum distance of the path.
+ * @return The new minimum distance after performing the random swap.
+ */
 double Menu::randomSwap(Graph<int>* g, vector<int>& minPath, double minDist) {
     double minDistS = minDist;
     int size = g->getNumVertex()-1;
@@ -132,6 +149,15 @@ double Menu::randomSwap(Graph<int>* g, vector<int>& minPath, double minDist) {
 }
 
 
+/**
+ * @brief Calculates the total distance of a given path in the graph using Haversine if necessary.
+ * This function calculates the total distance of a path by summing the distances between consecutive
+ * vertices in the path and if that distance doesn't exist it uses Haversine to calculate it.
+ * It also includes the distance from the last vertex back to the first vertex to complete the cycle.
+ * @param g Pointer to the graph.
+ * @param path Reference to the vector with the path.
+ * @return The total distance of the path.
+ */
 double distancePath(Graph<int>* g, vector<int>& path) {
     double distance = 0;
     int n = path.size();
@@ -146,7 +172,14 @@ double distancePath(Graph<int>* g, vector<int>& path) {
     return distance;
 }
 
-
+/**
+ * @brief Improves the path using the 2-opt algorithm.
+ * This function applies the 2-opt algorithm to optimize the given path. It swaps
+ * pairs of edges to find a shorter path until there is no improvement possible.
+ * @param g Pointer to the graph.
+ * @param minPath Reference to the vector with the minimum path.
+ * @param minDist Reference to the minimum distance of the path.
+ */
 void Menu::twoOpt(Graph<int>* g, vector<int>& minPath, double& minDist) {
     int n = g->getNumVertex();
     bool improve = true;
