@@ -297,13 +297,7 @@ void DisplayMenu::Base(){
             ShowResults(option, minDist, minPath, time);
             break;
         case 5:
-            start = std::chrono::high_resolution_clock::now();
-            pair = Menu::nearestNeighborTSP(graph, minPath, 0);
-            minDist = pair.first;
-            end = std::chrono::high_resolution_clock::now();
-            time = end - start;
-            ShowResults(option, minDist, minPath, time);
-            askContinue();
+            chooseStartingNode();
             break;
         case 0:
             CloseMenu();
@@ -313,8 +307,29 @@ void DisplayMenu::Base(){
     }
 }
 
+void DisplayMenu::chooseStartingNode(){
+    cout << "------------------------------------------------------------------" << endl;
+    cout << " Choose the starting node?" << endl;
+    cout << endl;
+    std::cout << " Node: ";
+    string k; cin >> k;
+    while (stoi(k) < 0 || stoi(k) >= graph->getNumVertex()) {
+        cout << "Invalid node. Node: ";
+        cin >> k;
+    }
+    cout << endl << endl;
 
-void DisplayMenu::ShowResults(int option, double minDist, vector<int> minPath, chrono::duration<double> time) {
+    double minDist; vector<int> minPath;
+    chrono::time_point<chrono::high_resolution_clock> start = std::chrono::high_resolution_clock::now();
+    chrono::time_point<chrono::high_resolution_clock> end;
+    pair<double, int> pair = Menu::nearestNeighborTSP(graph, minPath, stoi(k));
+    minDist = pair.first;
+    end = std::chrono::high_resolution_clock::now();
+    auto time = end - start;
+    ShowResults(5, minDist, minPath, time, graph->getNumVertex() - 1 - pair.second);
+}
+
+void DisplayMenu::ShowResults(int option, double minDist, vector<int> minPath, chrono::duration<double> time, int missedNodes) {
     switch (option){
         case 2:
             cout << "--------------------| Backtracking Algorithm |--------------------" << endl;
@@ -340,6 +355,7 @@ void DisplayMenu::ShowResults(int option, double minDist, vector<int> minPath, c
     cout << "0" << endl;
     cout << " Distance: " << minDist << std::endl;
     cout << " Duration: " << time.count() << " seconds" << endl << endl << endl;
+    if (missedNodes > 0) cout << " Missed: " << missedNodes << " nodes" << endl << endl << endl;
     askContinue();
 }
 
