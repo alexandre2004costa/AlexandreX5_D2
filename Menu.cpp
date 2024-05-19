@@ -41,6 +41,7 @@ bool isCycle(Vertex<T> *s, Vertex<T> *t, int size){
  * the smallest edge to the solution set, making sure there are no cycles and that the resulting path is valid.
  * @param g Pointer to the graph.
  * @param minPath Vector to store the resulting path of vertices.
+ * @details Complexity O(V^2), V: number of vertices.
  * @return The total weight of the edges in the solution.
  */
 double Menu::greedyHeuristica(Graph<int> * g, vector<int>& minPath){
@@ -97,6 +98,7 @@ double Menu::greedyHeuristica(Graph<int> * g, vector<int>& minPath){
  * @param g Pointer to the graph.
  * @param minPath Reference to the vector with the minimum path.
  * @param minDist The minimum distance of the path.
+ * @details Complexity O(E), E: number of edges.
  * @return The new minimum distance after performing the random swap.
  */
 double Menu::randomSwap(Graph<int>* g, vector<int>& minPath, double minDist) {
@@ -287,6 +289,7 @@ void backtrack(Graph<int>& graph, vector<int>& currentPath, vector<int>& bestPat
  * finding the shortest Hamiltonian cycle and updating the minimum path and distance.
  * @param graph Reference to the graph.
  * @param minPath Reference to the vector with the minimum path.
+ * @details Complexity O(v^2 * 2^v), E: number of edges.
  * @return The minimum distance of the Hamiltonian cycle.
  */
 double Menu::Backtracking(Graph<int>& graph, vector<int>& minPath) {
@@ -334,7 +337,6 @@ double Menu::Backtracking(Graph<int>& graph, vector<int>& minPath) {
             }
         }
 
-        //cout << v->getInfo() << "!" << nearestNeighbor << endl;
         if (nearestNeighbor == -1) { // NO edge available
             auto k =  v->getWeightTo(inicialVertex);
             if (k != -1) return {res + k,s.size()};
@@ -439,20 +441,16 @@ double Menu::simulatedAnnealing(Graph<int>* graph, vector<int>& minPath) {
     uniform_real_distribution<double> distribution(0.0, 1.0);
 
     double temperature = 100;
-    double coolRate = 0.999; // Taxa de resfriamento mais conservadora
+    double coolRate = 0.999;
 
-    // 1 - Initial solution for path
     double minDist = greedyHeuristica(graph, minPath);
-    cout << minDist << endl;
 
-    // 2 - Loop for temperature
+
     while (temperature > 0.1) {
-        // 3 - New solution for path: 2-opt
         vector<int> newPath = minPath;
         double newDist = minDist;
         newDist = randomSwap(graph, newPath, newDist);
 
-        // 4 - Check probability
         double deltaDist = abs(newDist - minDist);
         bool prob = exp(-deltaDist / temperature) > distribution(generator);
 
@@ -461,8 +459,6 @@ double Menu::simulatedAnnealing(Graph<int>* graph, vector<int>& minPath) {
             minDist = newDist;
         }
 
-
-        // 5 - Update temperature
         temperature *= coolRate;
     }
 
