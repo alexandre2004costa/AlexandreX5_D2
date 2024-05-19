@@ -237,7 +237,15 @@ double calculateDistance(Graph<int>& graph, int infoLast, int infoNext) {
     return 0;
 }
 
-
+/**
+ * @brief Does backtracking to find the shortest Hamiltonian cycle in the graph.
+ * This function recursively sees all possible paths in the graph to find the shortest
+ * Hamiltonian cycle, updating the new best path and minimum distance.
+ * @param graph Reference to the graph.
+ * @param currentPath Reference to the vector with the current path.
+ * @param bestPath Reference to the vector with the best path.
+ * @param minDistance Reference to the minimum distance.
+ */
 void backtrack(Graph<int>& graph, vector<int>& currentPath, vector<int>& bestPath, double& minDistance) {
     int pathSize = currentPath.size(), numVertex = graph.getNumVertex();
 
@@ -273,6 +281,14 @@ void backtrack(Graph<int>& graph, vector<int>& currentPath, vector<int>& bestPat
 }
 
 
+/**
+ * @brief Finds the shortest Hamiltonian cycle in the graph using backtracking.
+ * This function initializes the vertices and starts the backtracking from vertex 0,
+ * finding the shortest Hamiltonian cycle and updating the minimum path and distance.
+ * @param graph Reference to the graph.
+ * @param minPath Reference to the vector with the minimum path.
+ * @return The minimum distance of the Hamiltonian cycle.
+ */
 double Menu::Backtracking(Graph<int>& graph, vector<int>& minPath) {
     for (auto pair: graph.getVertexSet()) {
         auto vertex = pair.second;
@@ -287,56 +303,8 @@ double Menu::Backtracking(Graph<int>& graph, vector<int>& minPath) {
     backtrack(graph, currentPath, minPath, minDistance);
     return minDistance;
 }
-/*
 
-template <class T>
-void Tsp(vector<Edge<int>*> &path, double &cost, Graph<T> *g){
-    cost = 0;
 
-    vector<Edge<int>*>::iterator it = path.begin();
-
-    int actualV = 0;
-    int lastV = 0;
-    int carryV = 0;
-
-    while(it != path.end()){
-        Vertex<int> * v1 = (*it)->getPair().first;
-        Vertex<int> * v2 = (*it)->getPair().second;
-        if (v1->getInfo() == actualV || v1->getInfo() == carryV){
-            if (v2->isVisited()){
-                carryV = v2->getInfo();
-            }else actualV = v2->getInfo();
-        }else if (v2->getInfo() == actualV || v2->getInfo() == carryV){
-            if (v1->isVisited()){
-                carryV = v2->getInfo();
-            }else actualV = v1->getInfo();
-        }else{ // Back edge
-            if (v1->isVisited()){
-                actualV = v2->getInfo();
-            }else{
-                actualV = v1->getInfo();
-            }
-        }
-        if (actualV != lastV){
-            //cout << "de " << lastV << " para " << actualV << endl;
-            double v = g->findVertex(actualV)->getWeightTo(lastV);
-            //if (v == -1)
-               // cost += haversineDistance(g->findVertex(actualV)->getLatitude(), g->findVertex(actualV)->getLongitude(), g->findVertex(lastV)->getLatitude(), g->findVertex(lastV)->getLongitude());
-           // else cost += v;
-           // lastV = actualV;
-        }
-        v1->setVisited(true);
-        v2->setVisited(true);
-        it++;
-    }
-    //cout << "de " << actualV << " para " << 0 << endl;
-    double v = g->findVertex(0)->getWeightTo(actualV);
-    if (v == -1) {
-       // cost += haversineDistance(g->findVertex(0)->getLatitude(), g->findVertex(0)->getLongitude(), g->findVertex(actualV)->getLatitude(), g->findVertex(actualV)->getLongitude());
-    }else cost += v;
-
-}
-*/
 
  pair<double,int> Menu::nearestNeighborTSP(Graph<int> *graph, vector<int>& minPath, int inicialVertex){
     stack<Vertex<int>*> s;
