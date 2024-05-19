@@ -1,0 +1,54 @@
+\doxysection{Data Class Reference}
+\hypertarget{class_data}{}\label{class_data}\index{Data@{Data}}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static void \mbox{\hyperlink{class_data_a8180b56ac76a63f2b8685d5cde576c08}{load\+Graph}} (Graph$<$ int $>$ \texorpdfstring{$\ast$}{*}graph, string file\+Name, bool first\+\_\+line)
+\begin{DoxyCompactList}\small\item\em Loads a graph from a file. This function reads data from the file and puts the vertices and edges in the given graph. \end{DoxyCompactList}\item 
+static void \mbox{\hyperlink{class_data_a130e7767515968bea45939a3da8be121}{load\+Nodes\+Info}} (Graph$<$ int $>$ \texorpdfstring{$\ast$}{*}graph, string file\+Name)
+\begin{DoxyCompactList}\small\item\em Loads the nodes of a graph from a file. This function reads the nodes information from a file where each line represents a node with its ID, longitude and latitude. It puts the vertices in the given graph. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_data_a8180b56ac76a63f2b8685d5cde576c08}\label{class_data_a8180b56ac76a63f2b8685d5cde576c08} 
+\index{Data@{Data}!loadGraph@{loadGraph}}
+\index{loadGraph@{loadGraph}!Data@{Data}}
+\doxysubsubsection{\texorpdfstring{loadGraph()}{loadGraph()}}
+{\footnotesize\ttfamily void Data\+::load\+Graph (\begin{DoxyParamCaption}\item[{Graph$<$ int $>$ \texorpdfstring{$\ast$}{*}}]{graph,  }\item[{string}]{file\+Name,  }\item[{bool}]{first\+\_\+line }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Loads a graph from a file. This function reads data from the file and puts the vertices and edges in the given graph. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em graph} & Pointer to the graph. \\
+\hline
+{\em file\+Name} & Name of the file. \\
+\hline
+{\em first\+\_\+line} & If true ignore the first line.\\
+\hline
+\end{DoxyParams}
+Complexity-\/\texorpdfstring{$>$}{>} O(n), n is the number of lines of the file. \Hypertarget{class_data_a130e7767515968bea45939a3da8be121}\label{class_data_a130e7767515968bea45939a3da8be121} 
+\index{Data@{Data}!loadNodesInfo@{loadNodesInfo}}
+\index{loadNodesInfo@{loadNodesInfo}!Data@{Data}}
+\doxysubsubsection{\texorpdfstring{loadNodesInfo()}{loadNodesInfo()}}
+{\footnotesize\ttfamily void Data\+::load\+Nodes\+Info (\begin{DoxyParamCaption}\item[{Graph$<$ int $>$ \texorpdfstring{$\ast$}{*}}]{graph,  }\item[{string}]{file\+Name }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Loads the nodes of a graph from a file. This function reads the nodes information from a file where each line represents a node with its ID, longitude and latitude. It puts the vertices in the given graph. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em graph} & Pointer to the graph that will have the node information. \\
+\hline
+{\em file\+Name} & File with the node information. \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+Data.\+h\item 
+Data.\+cpp\end{DoxyCompactItemize}

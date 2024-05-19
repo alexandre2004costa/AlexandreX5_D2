@@ -315,6 +315,7 @@ double Menu::Backtracking(Graph<int>& graph, vector<int>& minPath) {
  * @param graph Pointer to the graph.
  * @param minPath Reference to the vector that will store the order of visited vertices in the path.
  * @param inicialVertex The starting vertex for the TSP algorithm.
+ * @details Complexity O(E), E: number of edges.
  * @return A pair containing the total weight of the TSP path and the number of vertices visited.
  */
 pair<double,int> Menu::nearestNeighborTSP(Graph<int> *graph, vector<int>& minPath, int inicialVertex){
@@ -455,6 +456,7 @@ void dfs(Vertex<T>* v, vector<int>& eulerianCircuit) {
  * total distance of the path that visits each vertex exactly once.
  * @param g Pointer to the graph.
  * @param minPath Vector with the resulting path.
+ * @details Complexity O(V^2), V: number of vertices.
  * @return The total distance of the path.
  */
 double Menu::triangularApproximation(Graph<int>* g, vector<int>& minPath){
@@ -481,6 +483,7 @@ double Menu::triangularApproximation(Graph<int>* g, vector<int>& minPath){
  * a probability function. The temperature gradually decreases, reducing the likelihood of accepting worse solutions over time.
  * @param graph Pointer to the graph.
  * @param minPath Reference to a vector that will store the path.
+ * @details Complexity O(V^3), V: number of vertices.
  * @return The total distance of the path.
  */
 double Menu::simulatedAnnealing(Graph<int>* graph, vector<int>& minPath) {
